@@ -63,6 +63,11 @@
             padding: 20px;
             border-radius: 5px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+        .visible {
+            opacity: 1;
         }
         h2, h3 {
             color: var(--primary-color);
@@ -80,6 +85,20 @@
         .publications li, .courses li, .blog-posts li {
             margin-bottom: 10px;
         }
+        .about-container {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .profile-pic img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .about-text {
+            flex: 1;
+        }
         footer {
             text-align: center;
             padding: 10px;
@@ -93,6 +112,10 @@
             }
             nav ul li {
                 margin: 5px 0;
+            }
+            .about-container {
+                flex-direction: column;
+                align-items: center;
             }
         }
     </style>
@@ -114,12 +137,19 @@
     </nav>
 
     <div class="container">
-        <section id="about">
+        <section id="about" class="fade-in">
             <h2>About</h2>
-            <p>I'm an <a href="https://privacy.cs.cmu.edu/masters/index.html">MSIT-PE</a> student at <a href="https://www.cmu.edu/">Carnegie Mellon University (CMU)</a>. My interests lie in the fields of Federated Learning, PPML, and AI Governance. I'm currently open for Summer Internships during 2025.</p>
+            <div class="about-container">
+                <div class="profile-pic">
+                    <img src="prahaladh.JPG" alt="Your Photo" />
+                </div>
+                <div class="about-text">
+                    <p>I'm an <a href="https://privacy.cs.cmu.edu/masters/index.html">MSIT-PE</a> student at <a href="https://www.cmu.edu/">Carnegie Mellon University (CMU)</a>. My interests lie in the fields of Federated Learning, PPML, and AI Governance. I'm currently open for Summer Internships during 2025.</p>
+                </div>
+            </div>
         </section>
 
-        <section id="courses">
+        <section id="courses" class="fade-in">
             <h2>Relevant Courses (Fall 2024)</h2>
             <ul class="courses">
                 <li><strong>Foundations of Privacy:</strong> Rekindled my predilection for math!</li>
@@ -130,7 +160,7 @@
             </ul>
         </section>
 
-        <section id="research">
+        <section id="research" class="fade-in">
             <h2>Research</h2>
             <h3>Publications</h3>
             <ul class="publications">
@@ -148,23 +178,28 @@
                 </li>
             </ul>
             <h3>Patents</h3>
-            <p><strong>Distributed, Privacy Preserving, Payments Fraud Detection System</strong><br>
-            Prahaladh Chandrahasan, Sujatha Balaji from Bank Of America<br>
-            18/239,214</p>
+            <ul class="publications">
+                <li>
+                    <strong>
+                        Distributed, Privacy Preserving, Payments Fraud Detection SystemDistributed, Privacy Preserving, Payments Fraud Detection System
+                        </strong><br>
+                     Prahaladh Chandrahasan,Sujatha Balaji<br>
+                    18/239,214 · Filed Aug 29, 2023<br>
+                </li>
+            </ul>
         </section>
 
-        <section id="blog">
+        <section id="blog" class="fade-in">
             <h2>Blog</h2>
             <ul class="blog-posts">
                 <li>
                     <h3><a href="https://medium.com/@pchasan">Latest blog posts on Medium</a></h3>
                     <p>Check out my Medium profile for my latest thoughts and articles on privacy, technology, and more.</p>
                 </li>
-                <!-- You can add more blog posts or featured articles here -->
             </ul>
         </section>
 
-        <section id="contact">
+        <section id="contact" class="fade-in">
             <h2>Contact Information</h2>
             <div class="contact-info">
                 Email: prahalac[at]cs.cmu.edu
@@ -172,7 +207,6 @@
                 <a href="https://www.linkedin.com/in/prahaladh-chandrahasan/" target="_blank">LinkedIn</a>
                 <a href="https://github.com/prahaladhchandrahasan" target="_blank">GitHub</a>
                 <a href="https://scholar.google.com/citations?hl=en&view_op=list_works&gmla=AETOMgGGLvE_CpXs840ooByB7mQUdRSkAxnMNAnfZWHozuxfd6Gx8I43T1ugfZ1v-EnwIUJDNC3kyFwkFkT_fw&user=2tXIWX4AAAAJ" target="_blank">Google Scholar</a>
-                <a href="https://medium.com/@pchasan" target="_blank">Medium</a>
             </div>
         </section>
     </div>
@@ -180,5 +214,20 @@
     <footer>
         <p>&copy; 2024 Prahaladh Chandrahasan. All rights reserved.</p>
     </footer>
+
+    <script>
+        const sections = document.querySelectorAll('section');
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        });
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+    </script>
 </body>
 </html>
