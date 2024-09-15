@@ -1,58 +1,184 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Prahaladh Chandrahasan</title>
-<style>
-h1 {text-align: center;}
-</style>
-<h1>Prahaladh Chandrahasan</h1>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prahaladh Chandrahasan - Academic Portfolio</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --background-color: #f4f4f4;
+            --text-color: #333;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 1rem 0;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 1.8em;
+        }
+        header p {
+            margin: 5px 0 0;
+            font-size: 1em;
+        }
+        nav {
+            background-color: var(--secondary-color);
+            padding: 0.5rem 0;
+        }
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            margin: 0;
+        }
+        nav ul li {
+            margin: 0 15px;
+        }
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        section {
+            background-color: white;
+            margin: 20px 0;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h2, h3 {
+            color: var(--primary-color);
+        }
+        .contact-info {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
+        .contact-info a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            margin-bottom: 10px;
+        }
+        .publications li, .courses li, .blog-posts li {
+            margin-bottom: 10px;
+        }
+        footer {
+            text-align: center;
+            padding: 10px;
+            background-color: var(--primary-color);
+            color: white;
+        }
+        @media (max-width: 768px) {
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            nav ul li {
+                margin: 5px 0;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h2>About</h2>
-    <p>Master's in Information Technology-Privacy Engineering <a href="https://privacy.cs.cmu.edu/masters/index.html">MSIT-PE</a> student in Carnegie Mellon University <a href = "https://www.cmu.edu/">(CMU)</a>. Interested in the in Fields of Federated Learning, PPML, AI Governance. Open for Summer Internships during 2025.</p>
-    <h2>Relevant Courses</h2> 
-    <h3>Fall 2024:</h3>
-    <ul> 
-        <li>Foundations of Privacy: Rekindled my prediliction for math!</li> 
-        <li>Privacy Policy Law and Technology: Interesting readings (tend to take a lot of time, tbh)</li>
-        <li>Law of Computer Technology: Awesome Homeworks!</li>
-        <li>Information Security Privacy and Policy: Security without the math!</li>
-        <li>Intro to Machine Learning: The autograder has been kind till now!</li>
-    </ul>
-   
+    <header>
+        <h1>Prahaladh Chandrahasan</h1>
+        <p>Master's in Information Technology-Privacy Engineering</p>
+    </header>
 
-    <h2>Contact Information</h2>
-    <ul>
-        <li>Email : prahalac [at] cs.cmu.edu</li>
-        <li>Resume: <a href="https://drive.google.com/file/d/1kYnt2FlkoXFTZf0t4ORE_yWHLNTYsFjD/view?usp=sharing">Link</a></li>
-        <li>LinkedIn : <a href="https://www.linkedin.com/in/prahaladh-chandrahasan/">Prahaladh Chandrahasan</a></li>
-        <li>Github : <a href="https://github.com/prahaladhchandrahasan">prahaladhchandrahasan</a> </li>
-        <li>Scholar : <a href="https://scholar.google.com/citations?hl=en&view_op=list_works&gmla=AETOMgGGLvE_CpXs840ooByB7mQUdRSkAxnMNAnfZWHozuxfd6Gx8I43T1ugfZ1v-EnwIUJDNC3kyFwkFkT_fw&user=2tXIWX4AAAAJ">Prahaladh Chandrahasan</a> </li>
-        <li>Medium : <a href="https://medium.com/@pchasan">pchasan</a> </li>
-    </ul>
-    <h2>Research</h2>
-    <h3>Publications</h3>
-    <ul>
-        <li>Federated Learning for Colorectal Cancer Prediction<br>
-        Yash Maurya, Prahaladh Chandrahasan<br>
-        IEEE Global Conference for Advancement in Technology 2022 (IEEE GCAT'22)<br>
-        <a href="https://ieeexplore.ieee.org/document/9972224">Link</a></li>
-        <li>
-            Motion pattern-based crowd scene classification using histogram of angular deviations of trajectories<br>
-            Abhilash K. Pai, Prahaladh Chandrahasan, U. Raghavendra & A. K. Karunakar<br>
-            The Visual Computer<br>
-            <a href="https://link.springer.com/article/10.1007/s00371-021-02356-3">Link</a></li>
-        </li>
-    </ul>
-    <h3>Patents</h3>
-    <ul>
-        <li>Distributed, Privacy Preserving, Payments Fraud Detection System<br>
+    <nav>
+        <ul>
+            <li><a href="#about">About</a></li>
+            <li><a href="#courses">Courses</a></li>
+            <li><a href="#research">Research</a></li>
+            <li><a href="#blog">Blog</a></li>
+            <li><a href="#contact">Contact</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <section id="about">
+            <h2>About</h2>
+            <p>I'm an <a href="https://privacy.cs.cmu.edu/masters/index.html">MSIT-PE</a> student at <a href="https://www.cmu.edu/">Carnegie Mellon University (CMU)</a>. My interests lie in the fields of Federated Learning, PPML, and AI Governance. I'm currently open for Summer Internships during 2025.</p>
+        </section>
+
+        <section id="courses">
+            <h2>Relevant Courses (Fall 2024)</h2>
+            <ul class="courses">
+                <li><strong>Foundations of Privacy:</strong> Rekindled my predilection for math!</li>
+                <li><strong>Privacy Policy Law and Technology:</strong> Interesting readings (tend to take a lot of time, tbh)</li>
+                <li><strong>Law of Computer Technology:</strong> Awesome Homeworks!</li>
+                <li><strong>Information Security Privacy and Policy:</strong> Security without the math!</li>
+                <li><strong>Intro to Machine Learning:</strong> The autograder has been kind till now!</li>
+            </ul>
+        </section>
+
+        <section id="research">
+            <h2>Research</h2>
+            <h3>Publications</h3>
+            <ul class="publications">
+                <li>
+                    <strong>Federated Learning for Colorectal Cancer Prediction</strong><br>
+                    Yash Maurya, Prahaladh Chandrahasan<br>
+                    IEEE Global Conference for Advancement in Technology 2022 (IEEE GCAT'22)<br>
+                    <a href="https://ieeexplore.ieee.org/document/9972224">Link to paper</a>
+                </li>
+                <li>
+                    <strong>Motion pattern-based crowd scene classification using histogram of angular deviations of trajectories</strong><br>
+                    Abhilash K. Pai, Prahaladh Chandrahasan, U. Raghavendra & A. K. Karunakar<br>
+                    The Visual Computer<br>
+                    <a href="https://link.springer.com/article/10.1007/s00371-021-02356-3">Link to paper</a>
+                </li>
+            </ul>
+            <h3>Patents</h3>
+            <p><strong>Distributed, Privacy Preserving, Payments Fraud Detection System</strong><br>
             Prahaladh Chandrahasan, Sujatha Balaji from Bank Of America<br>
-            18/239,214
-        </li>
-    </ul>
+            18/239,214</p>
+        </section>
 
+        <section id="blog">
+            <h2>Blog</h2>
+            <ul class="blog-posts">
+                <li>
+                    <h3><a href="https://medium.com/@pchasan">Latest blog posts on Medium</a></h3>
+                    <p>Check out my Medium profile for my latest thoughts and articles on privacy, technology, and more.</p>
+                </li>
+                <!-- You can add more blog posts or featured articles here -->
+            </ul>
+        </section>
+
+        <section id="contact">
+            <h2>Contact Information</h2>
+            <div class="contact-info">
+                <a href="mailto:prahalac@cs.cmu.edu">Email: prahalac@cs.cmu.edu</a>
+                <a href="https://drive.google.com/file/d/1kYnt2FlkoXFTZf0t4ORE_yWHLNTYsFjD/view?usp=sharing" target="_blank">Resume</a>
+                <a href="https://www.linkedin.com/in/prahaladh-chandrahasan/" target="_blank">LinkedIn</a>
+                <a href="https://github.com/prahaladhchandrahasan" target="_blank">GitHub</a>
+                <a href="https://scholar.google.com/citations?hl=en&view_op=list_works&gmla=AETOMgGGLvE_CpXs840ooByB7mQUdRSkAxnMNAnfZWHozuxfd6Gx8I43T1ugfZ1v-EnwIUJDNC3kyFwkFkT_fw&user=2tXIWX4AAAAJ" target="_blank">Google Scholar</a>
+                <a href="https://medium.com/@pchasan" target="_blank">Medium</a>
+            </div>
+        </section>
+    </div>
+
+    <footer>
+        <p>&copy; 2024 Prahaladh Chandrahasan. All rights reserved.</p>
+    </footer>
 </body>
-<footer>
-    <p>&copy; 2024 Prahaladh Chandrahasan</p>
 </html>
