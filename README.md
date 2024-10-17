@@ -1,1 +1,1 @@
-This is the source code to Jon Barron's public academic website: https://jonbarron.info/. Feel free to clone this code for your own personal use.
+This repo is forked from Jon Barron's public academic website: "https://github.com/jonbarron/website" repository. Feel free to use his template. Thank you John for the template.
