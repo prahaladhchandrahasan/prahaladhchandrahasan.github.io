@@ -140,6 +140,7 @@ span.highlight {
   width: 100%;
   max-width: 100%;
   cursor: pointer;
+  display: inline-block;
 }
 
 .profile-img {
@@ -150,15 +151,20 @@ span.highlight {
   display: block;
 }
 
+.profile-img-default {
+  position: relative;
+  z-index: 1;
+  transition: opacity 0.3s ease-in-out;
+}
+
 .profile-img-hover {
   position: absolute;
   top: 0;
   left: 0;
+  width: 100%;
+  height: 100%;
   opacity: 0;
-  transition: opacity 0.3s ease-in-out;
-}
-
-.profile-img-default {
+  z-index: 2;
   transition: opacity 0.3s ease-in-out;
 }
 
