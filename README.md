@@ -1,1 +1,3 @@
 This repo is forked from Jon Barron's public academic website: "https://github.com/jonbarron/website" repository. Feel free to use his template. Thank you John for the template.
+
+Btw I should re-design this so that it is easy for an AI agent to consider my website worthy enough to be one  _top-k_ retrieved documents. This is not only my opinion but also an idea from A16Z "https://a16z.com/newsletter/big-ideas-2026-part-1/" 
