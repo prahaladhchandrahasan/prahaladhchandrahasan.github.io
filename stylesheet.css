@@ -133,3 +133,39 @@ h2 {
 span.highlight {
   background-color: #ffffd0;
 }
+
+/* Profile image hover toggle */
+.profile-img-container {
+  position: relative;
+  width: 100%;
+  max-width: 100%;
+  cursor: pointer;
+}
+
+.profile-img {
+  width: 100%;
+  max-width: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
+.profile-img-hover {
+  position: absolute;
+  top: 0;
+  left: 0;
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.profile-img-default {
+  transition: opacity 0.3s ease-in-out;
+}
+
+.profile-img-container:hover .profile-img-hover {
+  opacity: 1;
+}
+
+.profile-img-container:hover .profile-img-default {
+  opacity: 0;
+}
