@@ -203,6 +203,59 @@
       </tr>
     </table>
 
+<!-- Copy page button -->
+<div class="copy-page-container">
+  <div class="copy-page-dropdown" id="copyDropdown">
+    <button onclick="copyMarkdown()">
+      <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      Copy page as Markdown
+    </button>
+    <button onclick="openMarkdown()">
+      <svg viewBox="0 0 24 24"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Open Markdown
+    </button>
+  </div>
+  <div class="copy-page-btn-group">
+    <button class="copy-page-main" onclick="copyMarkdown()" id="copyMainBtn">
+      <svg viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+      <span id="copyBtnText">Copy page</span>
+    </button>
+    <button class="copy-page-chevron" onclick="toggleDropdown(event)">
+      <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+    </button>
+  </div>
+</div>
+
+<script>
+  function toggleDropdown(e) {
+    e.stopPropagation();
+    document.getElementById('copyDropdown').classList.toggle('open');
+  }
+
+  function copyMarkdown() {
+    document.getElementById('copyDropdown').classList.remove('open');
+    fetch('llm-markdown.md')
+      .then(function(r) { return r.text(); })
+      .then(function(text) {
+        return navigator.clipboard.writeText(text);
+      })
+      .then(function() {
+        var btn = document.getElementById('copyBtnText');
+        btn.textContent = 'Copied!';
+        setTimeout(function() { btn.textContent = 'Copy page'; }, 2000);
+      });
+  }
+
+  function openMarkdown() {
+    document.getElementById('copyDropdown').classList.remove('open');
+    window.open('llm-markdown.md', '_blank');
+  }
+
+  document.addEventListener('click', function() {
+    document.getElementById('copyDropdown').classList.remove('open');
+  });
+</script>
+
 <a title="Web Analytics" href="https://clicky.com/101473888"><img alt="Clicky" src="//static.getclicky.com/media/links/badge.gif" border="0" /></a>
 <script async src="//static.getclicky.com/101473888.js"></script>
 <noscript><p><img alt="Clicky" width="1" height="1" src="//in.getclicky.com/101473888ns.gif" /></p></noscript>

@@ -133,3 +133,121 @@ h2 {
 span.highlight {
   background-color: #ffffd0;
 }
+
+/* Copy page button */
+.copy-page-container {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1000;
+  font-family: 'Lato', Verdana, Helvetica, sans-serif;
+}
+
+.copy-page-btn-group {
+  display: inline-flex;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.copy-page-main {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  background: #333;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: inherit;
+}
+
+.copy-page-main:hover {
+  background: #444;
+}
+
+.copy-page-main svg {
+  width: 16px;
+  height: 16px;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.copy-page-chevron {
+  display: flex;
+  align-items: center;
+  padding: 8px 10px;
+  background: #333;
+  color: #fff;
+  border: none;
+  border-left: 1px solid #555;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: inherit;
+}
+
+.copy-page-chevron:hover {
+  background: #444;
+}
+
+.copy-page-chevron svg {
+  width: 14px;
+  height: 14px;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.copy-page-dropdown {
+  display: none;
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  margin-bottom: 6px;
+  background: #333;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  overflow: hidden;
+  min-width: 210px;
+}
+
+.copy-page-dropdown.open {
+  display: block;
+}
+
+.copy-page-dropdown button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 14px;
+  background: none;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: inherit;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.copy-page-dropdown button:hover {
+  background: #444;
+}
+
+.copy-page-dropdown button svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  fill: none;
+  stroke: #fff;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
