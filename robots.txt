@@ -1,5 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /.git/
-
-Sitemap: https://prahaladhchandrahasan.github.io/sitemap.xml

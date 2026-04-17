@@ -1,0 +1,43 @@
+{
+  "name": "prahaladhchandrahasan.github.io",
+  "version": "1.0.0",
+  "description": "This repo is forked from Jon Barron's public academic website: \"https://github.com/jonbarron/website\" repository. Feel free to use his template. Thank you John for the template.",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/prahaladhchandrahasan/prahaladhchandrahasan.github.io.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/prahaladhchandrahasan/prahaladhchandrahasan.github.io/issues"
+  },
+  "homepage": "https://github.com/prahaladhchandrahasan/prahaladhchandrahasan.github.io#readme",
+  "dependencies": {
+    "@allenai/varnish-theme": "^3.0.10-alpha.0",
+    "@allenai/varnish2": "^4.0.2-alpha.0",
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/icons-material": "^7.3.10",
+    "@mui/lab": "^7.0.0-beta.6",
+    "@mui/material": "^7.3.10",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-helmet-async": "^3.0.0",
+    "react-router-dom": "^7.14.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.28",
+    "@types/react-dom": "^18.3.7",
+    "@vitejs/plugin-react": "^6.0.1",
+    "typescript": "^6.0.3",
+    "vite": "^8.0.8"
+  }
+}
