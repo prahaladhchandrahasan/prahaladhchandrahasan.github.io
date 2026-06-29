@@ -487,6 +487,10 @@ h3 {
 }
 
 .article-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 7px;
   color: var(--muted);
   font-size: 0.95rem;
 }
