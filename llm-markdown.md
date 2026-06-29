@@ -24,7 +24,7 @@
 
 Prahaladh is a founding engineer at Circle where he builds AI agents for insurance. He is Engineering hire #2 and is primarily responsible for the backend, infrastructure and performance optimization.
 
-He graduated from the School of Computer Science at Carnegie Mellon University (Dec 2025). At CMU, he worked as a machine learning engineer at the Language Technologies Institute advised by Prof. Chenyan Xiong and Prof. Mona Diab, developing tools for multimodal RAG and deep research agents. He was on the organizing committee of the NeurIPS 2025 competition MMU-RAG.
+He graduated from the School of Computer Science at Carnegie Mellon University (Dec 2025). At CMU, he worked as a machine learning engineer at the Language Technologies Institute advised by Prof. Chenyan Xiong and Prof. Mona Diab, developing tools for multimodal RAG and deep research agents. He also worked on LLM selective refusal. He was on the organizing committee of the NeurIPS 2025 competition MMU-RAG.
 
 He was also a privacy engineer in CMU's Software and Societal Systems department under Professors Norman Sadeh, Lorrie Cranor, and Hana Habib, working on the UsersFirst framework. His capstone project with Meta's AI Risk and Governance team focused on enhancing transparency in AI voice assistants.
 
