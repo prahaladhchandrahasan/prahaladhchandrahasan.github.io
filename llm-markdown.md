@@ -6,8 +6,8 @@
 ## Summary
 
 - **Name:** Prahaladh Chandrahasan
-- **Current Role:** Founding Forward Deployed Engineer at Circle-AI
-- **Company:** [Circle-AI](https://www.usecircle.com/) (funded by Unusual Ventures)
+- **Current Role:** Founding Forward Deployed Engineer at Circle
+- **Company:** [Circle](https://www.usecircle.com/) (funded by Unusual Ventures)
 - **Education:** M.S. in Privacy Engineering, School of Computer Science, Carnegie Mellon University (GPA: 3.92/4.33, Dec 2025)
 - **Areas of Expertise:** AI Agent Development, deployment and Performance Optimization, LLM and Agent Serving Infrastructure and Backend, Kubernetes, Docker, AWS, Azure, Redis
 - **Email:** prahald92 at gmail dot com
@@ -22,7 +22,7 @@
 
 ## Bio
 
-Prahaladh is a founding engineer at Circle-AI where he builds AI agents for insurance. He is Engineering hire #2 and is primarily responsible for the backend, infrastructure and performance optimization.
+Prahaladh is a founding engineer at Circle where he builds AI agents for insurance. He is Engineering hire #2 and is primarily responsible for the backend, infrastructure and performance optimization.
 
 He graduated from the School of Computer Science at Carnegie Mellon University (Dec 2025). At CMU, he worked as a machine learning engineer at the Language Technologies Institute advised by Prof. Chenyan Xiong and Prof. Mona Diab, developing tools for multimodal RAG and deep research agents. He was on the organizing committee of the NeurIPS 2025 competition MMU-RAG.
 
@@ -36,7 +36,7 @@ Before CMU, he was a Software Engineer at Bank of America (APAC Payments) and a 
 
 | Role | Organization | Duration |
 |------|-------------|----------|
-| Founding Forward Deployed Engineer | Circle-AI | Jan 2026 – Present |
+| Founding Forward Deployed Engineer | Circle | Jan 2026 – Present |
 | Machine Learning Engineer | CMU LTI (with Amazon AGI) | Jan 2025 – Dec 2025 |
 | Privacy Engineer (Independent Study) | CMU, under Prof. Norman Sadeh | Jan 2025 – Dec 2025 |
 | Capstone Project | Meta AI Risk and Governance | Sept 2025 – Dec 2025 |
@@ -106,7 +106,7 @@ Before CMU, he was a Software Engineer at Bank of America (APAC Payments) and a 
 
 | Date | Event |
 |------|-------|
-| Jan 2026 | Joined Circle-AI as Founding Forward Deployed Engineer |
+| Jan 2026 | Joined Circle as Founding Forward Deployed Engineer |
 | Jan 2026 | Deep-Research-Comparator paper accepted as demo at WWW 2026 |
 | Dec 2025 | Graduated from CMU (M.S. Privacy Engineering, GPA 3.92/4.33) |
 | Sept 2025 | Started Capstone Project with Meta on AI Voice Assistant transparency |
