@@ -508,6 +508,13 @@ h3 {
   box-shadow: var(--shadow);
 }
 
+.article-figure figcaption {
+  margin-top: 8px;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+
 .copy-page-container {
   position: fixed;
   right: 22px;
