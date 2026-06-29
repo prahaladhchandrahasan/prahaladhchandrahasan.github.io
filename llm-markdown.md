@@ -1,7 +1,7 @@
 # Prahaladh Chandrahasan
 
 > Source: https://prahaladhchandrahasan.github.io
-> Last updated: 2026-05-26
+> Last updated: 2026-06-29
 
 ## Summary
 
@@ -16,7 +16,7 @@
 - **LinkedIn:** https://www.linkedin.com/in/prahaladh-chandrahasan/
 - **Google Scholar:** https://scholar.google.com/citations?user=2tXIWX4AAAAJ&hl=en&authuser=1
 - **X/Twitter:** https://x.com/pralichan
-- **Open Thoughts:** https://prahaladhchandrahasan.github.io/thoughts/some-stuff-about-cmu/
+- **Open Thoughts:** https://prahaladhchandrahasan.github.io/thoughts/in-defense-of-the-gpt-wrapper/ and https://prahaladhchandrahasan.github.io/thoughts/some-stuff-about-cmu/
 
 ---
 
@@ -98,6 +98,7 @@ Before CMU, he was a Software Engineer at Bank of America (APAC Payments) and a 
 
 ## Open Thoughts
 
+- [In defense of the "GPT wrapper"](https://prahaladhchandrahasan.github.io/thoughts/in-defense-of-the-gpt-wrapper/) — practical engineering challenges behind building AI agents and "GPT wrappers", including context management, harness safety, concurrency, reversibility, scoping, tool ergonomics, file formats, UI, and timestamps.
 - [Some stuff about CMU](https://prahaladhchandrahasan.github.io/thoughts/some-stuff-about-cmu/) — personal notes and advice from Prahaladh's time at Carnegie Mellon University.
 
 ---

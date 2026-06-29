@@ -433,6 +433,10 @@ h3 {
   border-bottom: 1px solid var(--border);
 }
 
+.thought-item + .thought-item {
+  border-top: 0;
+}
+
 .thought-date {
   color: var(--muted);
   font-size: 0.92rem;
@@ -490,6 +494,18 @@ h3 {
 .article-content p,
 .article-content li {
   color: var(--text);
+}
+
+.article-figure {
+  margin: 18px 0 8px;
+}
+
+.article-figure img {
+  display: block;
+  width: min(100%, 451px);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
 }
 
 .copy-page-container {
