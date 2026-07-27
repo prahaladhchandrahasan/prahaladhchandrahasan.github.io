@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f7f4ee" id="theme-color-meta">
+    <title>Your personal computer is not that personal - Prahaladh Chandrahasan</title>
+    <meta name="description" content="What I found when I pointed a coding agent at my own laptop with full disk access, and why agent permission models are built for integrity when the problem is confidentiality.">
+    <link rel="canonical" href="https://prahaladhchandrahasan.github.io/thoughts/your-personal-computer-is-not-that-personal/">
+    <link rel="icon" type="image/gif" href="../../images/scslogo_no_outline_simple.gif">
+    <link rel="stylesheet" type="text/css" href="../../stylesheet.css">
+    <script>
+      (function () {
+        try {
+          var savedTheme = localStorage.getItem('theme');
+          var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          var useDark = savedTheme ? savedTheme === 'dark' : prefersDark;
+          if (useDark) document.documentElement.classList.add('theme-dark');
+          var metaTheme = document.getElementById('theme-color-meta');
+          if (metaTheme) metaTheme.setAttribute('content', useDark ? '#191c20' : '#f7f4ee');
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body class="article-page">
+    <main class="article-shell">
+      <a class="article-back-link" href="../../index.html#thoughts">Back to home</a>
+      <article class="article-content">
+        <header class="article-header">
+          <p class="eyebrow">Open Thoughts</p>
+          <h1>Your personal computer is not that personal</h1>
+          <p class="article-meta">
+            <span>2026.7.27</span>
+            <span aria-hidden="true">&middot;</span>
+            <span>San Francisco, CA</span>
+          </p>
+        </header>
+
+        <p><em>&rsquo;Cause we are living in an agentic world, and my disk is an open book.</em></p>
+
+        <p>A colleague mentioned that Opus 5 had pulled context out of his local iMessages database. So I spent an evening pointing a coding agent at my own laptop to see what it could work out about me.</p>
+
+        <p>The short version: quite a lot, and none of it required anything clever.</p>
+
+        <p><strong>NOTE:</strong> I ran this with Opus 5 (high effort) using Claude Code as the harness, on macOS, with Full Disk Access granted to my terminal. Every one of those variables matters, and I will come back to why. Results will differ for other model / harness / effort combinations.</p>
+
+        <h2>What it found</h2>
+
+        <p>It read my <code>chat.db</code> and reconstructed who I talk to and about what. It went through my git history. It read the config files for Codex and a couple of other coding harnesses, which is how it ended up holding live API keys. It combed my browser history. It printed the contents of my clipboard, which is a one-line shell command and still felt invasive to watch.</p>
+
+        <p>The Photos library is the one worth dwelling on. It declined on the first ask. Then I said go ahead, and it went through the whole thing. A boundary that dissolves the first time you push on it was not really a boundary &mdash; it was a speed bump with good manners. Hold that thought, because I come back to it.</p>
+
+        <h2>The part I actually find interesting</h2>
+
+        <p>The obvious reading is that the agent is too powerful. I do not think that is the story. The story is that every guardrail in the stack is pointed at the wrong risk.</p>
+
+        <p>Look at what the defaults actually protect. Claude Code <a href="https://code.claude.com/docs/en/security" target="_blank" rel="noopener">starts read-only and asks before it does anything else</a>: it needs approval to run Bash commands that can modify your system, and it cannot write outside the folder you launched it in without asking. Reading paths outside that boundary with Read, Grep and Glob is a different matter. Its <a href="https://anthropic.com/engineering/claude-code-sandboxing" target="_blank" rel="noopener">sandboxing</a> &mdash; real kernel-level isolation, seatbelt on macOS and bubblewrap on Linux &mdash; stops the agent from modifying files it should not touch and from reaching servers it should not reach.</p>
+
+        <p>Every single one of those is an <strong>integrity</strong> control. Can this thing break my machine? Can it destroy my work? Can it ship something out?</p>
+
+        <p>You can see the shape of it in the sandbox&rsquo;s own resolved config.</p>
+
+        <figure class="article-figure">
+          <img src="sandbox-config.png" alt="The /sandbox Config tab on my machine: a single denied read path, against roughly forty lines of denied write paths.">
+          <figcaption>Filesystem Read Restrictions, in full, above. Filesystem Write Restrictions, abridged, below it.</figcaption>
+        </figure>
+
+        <p>Writes are an allowlist: a short list of permitted paths and then forty-odd lines enumerating everything denied inside them. Reads are a denylist, and on my machine that denylist had exactly one entry &mdash; <code>~/.claude/ide</code>. The single path the default read policy protects is the agent&rsquo;s own working directory, not mine. The docs are upfront about this: the default is read access to the whole computer minus a few denied directories, and they note it still permits reading <code>~/.aws/credentials</code> and <code>~/.ssh/</code>.</p>
+
+        <p>My favourite detail is that <code>~/.ssh</code> does appear in the write-deny list. The sandbox will stop an agent from modifying my SSH keys and let it read them. That is the entire thesis of this post sitting in one path in a config file.</p>
+
+        <p>The permission layer tells the same story from the other side. This is the Deny tab &mdash; the rules Claude Code will always reject, no prompt, no negotiation:</p>
+
+        <figure class="article-figure">
+          <img src="permissions-deny.png" alt="The Deny tab in /permissions: every visible rule is a Bash command pattern - chgrp, chown, dd, fdisk, format.">
+          <figcaption>The Deny tab in <code>/permissions</code>, on my machine.</figcaption>
+        </figure>
+
+        <p>Ownership changes, raw disk writes, partition tables. Every entry is a command, and every command is a way to damage the machine. The vocabulary of the list is destruction, and there is no vocabulary in it for disclosure. The syntax supports <code>Read(...)</code> rules perfectly well &mdash; nothing on this screen is one.</p>
+
+        <p>Reading is the unguarded path, and reading is the entire privacy threat model. Nothing gets damaged when an agent walks your <code>~/Library</code>. Nothing gets deleted. There is no destructive command to intercept. The blast radius is measured in what somebody now knows about you, and no permission prompt in the stack is denominated in that unit.</p>
+
+        <p>macOS is the same story one layer down. TCC does gate <code>~/Library/Messages</code> and the Photos library &mdash; the mechanism exists and it works. But the unit of consent is the <em>app</em>. Grant Full Disk Access to Terminal and everything you launch from Terminal inherits it, because TCC resolves permissions against the responsible parent process. The OS is answering whether I trust iTerm, which was a perfectly good question in 2019. It is not the question anymore. The thing sitting inside iTerm has its own goals, reads at a speed no human reads at, and synthesises across sources in a way no <code>grep</code> ever did.</p>
+
+        <p>So the ask is not for someone to invent a mechanism. The mechanisms exist. They are scoped to the wrong verb and consented to at the wrong granularity.</p>
+
+        <h2>The threat I under-weighted at first</h2>
+
+        <p>My first instinct was to worry about the model provider, and I still do &mdash; see below. But there is a second adversary I had not put in the model at all.</p>
+
+        <p>An agent with read access to your home directory and an outbound network connection is a general-purpose exfiltration primitive waiting for a sentence in its context window. That sentence does not have to come from you. It can come from the README in the repo you just cloned, a dependency you just installed, a page the agent just fetched. At that point your data is not going to a provider under a retention policy you can read. It is going to whoever wrote the sentence, under no policy at all.</p>
+
+        <p>This also reframes the API keys. The finding is not that the model read my keys. It is that live credentials were sitting in plaintext in dotfiles and in git history, where any compromised postinstall script could have taken them years ago without asking. The agent did not create that exposure. It just made it legible in an afternoon.</p>
+
+        <h2>Two paths to the same bytes</h2>
+
+        <p>Here is the part that took me longest to notice, and it is why I cut the advice I was originally going to give.</p>
+
+        <p>The sandbox isolates <strong>Bash subprocesses</strong>. That is its whole scope. The built-in file tools &mdash; Read, Edit and Write &mdash; never enter it; they are gated by the permission system instead. The <a href="https://code.claude.com/docs/en/sandboxing" target="_blank" rel="noopener">sandboxing docs</a> say this outright in the Scope section, and again when comparing the two layers: permission rules apply to every tool, sandboxing applies to Bash commands and their children. Grep and Glob are tools rather than shell commands too &mdash; Grep wraps ripgrep instead of shelling out to <code>grep</code> &mdash; so searching your disk never has to touch Bash either.</p>
+
+        <figure class="article-figure">
+          <img src="two-paths.svg" alt="Two paths to the same file: a Bash command runs inside the OS-enforced sandbox, while the Read tool is gated only by the permission system. Both reads succeed by default.">
+          <figcaption>Two paths to the same bytes. The Bash command enters the OS-enforced sandbox; the Read tool is gated only by the permission system.</figcaption>
+        </figure>
+
+        <p>So the read I actually exercised was never sandboxed. And the docs are clear about why the difference is one of kind rather than degree: permission decisions are evaluated before a command runs, from the command string and a classifier&rsquo;s judgment about whether it looks safe. The sandbox boundary is enforced by the operating system on the running process, so it holds regardless of what the model chose to run. That is the vendor stating my argument for me &mdash; OS enforcement is stronger precisely because it does not route through the model&rsquo;s judgment. It is also the property the read path does not have.</p>
+
+        <p>A page later the docs make that difference concrete, in a passage doing more work than its placement suggests. <code>Read</code> and <code>Edit</code> deny rules <em>do</em> reach into Bash &mdash; but only for the file commands Claude Code recognises, like <code>cat</code>, <code>head</code>, <code>tail</code>, <code>sed</code> and <code>grep</code>. They do not apply to a Python or Node script that opens the file itself. And the recognised set is not internally consistent: <code>egrep</code> and <code>fgrep</code> count for one purpose and are not checked against <code>Read</code> deny rules at all. The docs&rsquo; own conclusion, in the same breath, is that for enforcement covering every process you enable the sandbox.</p>
+
+        <p>That is the gap between the two layers stated as an engineering fact rather than a preference. A deny rule is pattern-matching over a command string, so it needs a hand-maintained list of what counts as reading a file &mdash; and the list has holes. <code>egrep</code> is a small hole. <code>python -c "open('chat.db')"</code> is a hole the size of a language runtime. The sandbox has none of that shape, because it does not parse anything; it constrains the process. Soft controls fail by enumeration. Hard controls do not enumerate.</p>
+
+        <p>One more turn of the screw: Claude Code&rsquo;s tool instructions tell the model to prefer the built-ins &mdash; always use Grep for search, never invoke <code>grep</code> or <code>rg</code> through Bash, use Read rather than <code>cat</code>. That is sensible engineering, since the tools are faster and return structured output. It also means the route the harness actively steers onto is the route that never enters the sandbox.</p>
+
+        <p>Now the effort question. Suppose you want the obvious things off limits. There is no built-in credential deny list; only what you list yourself is restricted. So you write it out by hand, path by path, in <code>settings.json</code>:</p>
+
+        <pre><code>{
+  "permissions": {
+    "deny": [
+      "Read(//Users/you/Library/Messages/**)",
+      "Read(//Users/you/Pictures/Photos Library.photoslibrary/**)",
+      "Read(//Users/you/.ssh/**)",
+      "Read(//Users/you/.aws/**)",
+      "Read(//Users/you/Library/Keychains/**)",
+      "Read(//Users/you/Library/Application Support/Google/Chrome/**)"
+    ]
+  }
+}</code></pre>
+
+        <p>Note the double slash &mdash; absolute paths in <code>Read</code> rules use <code>//</code>, while sandbox filesystem paths use ordinary <code>/</code> and <code>~/</code>. Two prefix conventions in one config file for the same concept. And the settings cover different things in opposite directions: <code>sandbox.credentials</code>, the one that sounds like it was built for exactly this, protects <code>cat ~/.ssh/id_rsa</code> and not <code>Read</code> on the same file, because it is scoped to sandboxed Bash commands. A <code>Read</code> deny rule covers both the tool and the Bash file commands Claude Code recognises. Neither covers a script that opens the file itself.</p>
+
+        <p>None of that is hard. It is maybe fifteen minutes with the docs open. But it is fifteen minutes you have to know to spend, on a list you have to think up yourself, in a syntax that changes between adjacent sections of the same file &mdash; and the failure mode of getting it wrong is silent. Nothing tells you that your Photos library was readable the whole time. Compare that to the write side, which ships with forty-odd denied paths you never had to think about.</p>
+
+        <p>I had a paragraph here telling you to go and turn the sandbox on. I have deleted it. The sandbox is good engineering aimed at a real risk. It is just not aimed at this one, and recommending it here would have been me trusting the name over the scope.</p>
+
+        <h2>Where the responsibility actually sits</h2>
+
+        <h3>The model provider</h3>
+
+        <p>Two asks, and I am not softening either one.</p>
+
+        <p><strong>Zero retention by default on personal plans.</strong> Not as an enterprise contract line item &mdash; as the default for everyone. Right now consumer plans ship a training toggle that <a href="https://www.anthropic.com/news/updates-to-our-consumer-terms" target="_blank" rel="noopener">defaults to on</a>; leave it and your chats are <a href="https://privacy.claude.com/en/articles/10023548-how-long-do-you-store-my-data" target="_blank" rel="noopener">retained for up to five years</a>, turn it off and you drop to thirty days. Thirty days is much better than five years. It is not zero.</p>
+
+        <p><strong>Ship a default read-deny list.</strong> This is the cheapest fix on this page and I do not understand why it does not exist. <code>~/.ssh</code>, <code>~/.aws</code>, <code>~/Library/Messages</code>, the Photos library, browser profiles, Keychain &mdash; deny reads on all of it by default, on both the sandbox path and the permission path, and make widening it a deliberate act. I am not asking for reads to be allowlisted wholesale; agents legitimately read toolchains and global config all day, and a policy that prompts constantly is a policy people switch off. I am asking for the twenty paths that are never a build dependency and always a privacy incident. The usability cost is approximately zero and it closes most of what I found in an evening.</p>
+
+        <p><strong>Refuse some of this outright, and keep refusing.</strong> This is the part I expect pushback on, so let me take the strongest objection first: refusal is circumventable. <code>chat.db</code> is a SQLite file. An agent that declines to read my iMessages but happily runs a query against the database behind them has accomplished nothing. That is true, and it is not a reason to drop the control.</p>
+
+        <p>It is not a reason, because almost no privacy harm here is adversarial. The realistic failure is not me trying to trick a model into reading my messages. It is an agent deciding, mid-task, that my messages are useful context for something unrelated &mdash; and being right about that, and reading them, and me finding out three tool calls later if I find out at all. Refusal is aimed precisely at the un-considered read, and the un-considered read is the modal case. Sandboxing catches the adversary; refusal catches the afternoon where nobody was being an adversary and my data left anyway.</p>
+
+        <p>Which brings me back to Photos. It refused, and then it folded, because I said the magic words. I do not want a boundary calibrated so that any expression of intent clears it. If a model has decided a category of data is off-limits by default, the second ask should not be what unlocks it &mdash; a deliberate, out-of-band grant should be, and it should be visible afterwards. That is a criticism of how the line was drawn, not a request to remove capability I already have.</p>
+
+        <h3>The OS, which is where the real boundary lives</h3>
+
+        <p>I will state this plainly: OS-level separation is the strongest boundary available, and everything above it is mitigation.</p>
+
+        <p>The naive version of the ask does not work. A syscall carries no record of who wanted it. A <code>read()</code> issued because I typed a command and a <code>read()</code> issued because a model decided to are the same <code>read()</code>, and no amount of kernel instrumentation will tell them apart once the agent has a shell running as me. That is the mistake to avoid.</p>
+
+        <p>The version that works is to stop trying to identify the caller and start treating the agent as a <strong>different principal</strong>. Its own user, its own TCC identity, its own seatbelt profile or namespace, with a declared read scope enforced at the syscall layer &mdash; so that anything outside the scope fails, loudly, rather than silently succeeding because I once clicked Allow on a terminal emulator. This is the confused deputy problem with new clothes, and the fix has always been least authority, not provenance tracking.</p>
+
+        <p>Four reasons this layer beats the ones above it:</p>
+
+        <ol>
+          <li><strong>It fails closed.</strong> Refusals, hooks and harness permissions are all software that the agent&rsquo;s own reasoning is routed through. Kernel enforcement is not.</li>
+          <li><strong>It is vendor-independent.</strong> I would rather enforce one policy at the OS than separately trust the guardrails of every harness I install this year.</li>
+          <li><strong>The audit trail is not written by the thing being audited.</strong> An agent-generated activity log is a self-report. A kernel log is evidence.</li>
+          <li><strong>It does not need relitigating every model release.</strong> Model behaviour is a moving target by design. A seatbelt profile is not.</li>
+        </ol>
+
+        <p>None of this is hypothetical, which is the frustrating part. Seatbelt and bubblewrap already do the enforcement. The sandbox already proves the mechanism works and that the performance cost is negligible. What is missing is coverage &mdash; it is scoped to one tool surface and one verb &mdash; and defaults. The layer is right. The wiring is not finished.</p>
+
+        <p>There is precedent for all of it. Browsers, mobile apps, containers &mdash; every previous instance of &quot;untrusted code running with the user&rsquo;s authority&quot; ended at OS isolation, and none of them ended at asking the code nicely.</p>
+
+        <h3>Us</h3>
+
+        <p>In order of payoff, not order of interest:</p>
+
+        <ol>
+          <li><strong>Get your secrets off disk.</strong> Keychain, short-lived tokens, <code>gitleaks</code> in a pre-commit hook. If an agent can read your keys in plaintext, so could a malicious postinstall, and it would not have asked first.</li>
+          <li><strong>Run agents from a terminal without Full Disk Access.</strong> Keep a second one that has it for the rare case where you actually mean it. This is the single thing that would have prevented everything in this post, and it costs you one entry in System Settings.</li>
+          <li><strong>Read your traces sometimes.</strong> If you asked for a summary of your bank statements and there is a tool call reaching into Messages, that is worth knowing about. A monitoring agent is not the answer here &mdash; that is a second thing reading everything the first thing read.</li>
+          <li><strong>Decide what stays off the machine entirely.</strong> The boring answer, and the only one that fully works.</li>
+        </ol>
+
+        <h2>The question I do not have an answer to</h2>
+
+        <p>The 1980s personal computer was personal in the sense that the data stayed put. Nothing on it read itself. Everything since &mdash; cloud sync, telemetry, always-on assistants &mdash; has chipped at that, and an agent with read access finishes the job, because it is the first thing on your machine that can <em>understand</em> what it reads. Your disk has always held your bank statements and your 2FA recovery codes and every photo you never deleted. What is new is that something in the room can form a coherent picture out of all of it in about ninety seconds.</p>
+
+        <p>Do not read any of this as wanting less capable models. I want the opposite. I want them smarter, useful enough that I genuinely want them working on my own data &mdash; and aligned well enough that they do not go through my messages even when I ask.</p>
+
+        <p>See ya in the next one.</p>
+      </article>
+    </main>
+  </body>
+</html>

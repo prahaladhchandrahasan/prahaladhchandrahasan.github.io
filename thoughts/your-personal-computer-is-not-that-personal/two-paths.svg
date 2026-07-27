@@ -1,0 +1,73 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 700" width="100%" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, sans-serif">
+
+  <defs>
+    <marker id="ah" markerWidth="9" markerHeight="9" refX="7.5" refY="3.5" orient="auto">
+      <path d="M0,0 L7.5,3.5 L0,7 Z" fill="#16150f"/>
+    </marker>
+    <marker id="as" markerWidth="9" markerHeight="9" refX="7.5" refY="3.5" orient="auto">
+      <path d="M0,0 L7.5,3.5 L0,7 Z" fill="#8a7f6a"/>
+    </marker>
+  </defs>
+
+  <rect width="900" height="700" fill="#f7f4ee"/>
+
+  <text x="48" y="52" font-size="11" letter-spacing="2.4" fill="#8a7f6a">ONE FILE</text>
+  <text x="48" y="80" font-size="21" font-weight="600" fill="#16150f">Two paths to the same bytes</text>
+  <line x1="48" y1="100" x2="852" y2="100" stroke="#c9c2b2" stroke-width="1"/>
+
+  <!-- source -->
+  <rect x="290" y="128" width="320" height="46" rx="2" fill="#fffdf8" stroke="#16150f" stroke-width="1.2"/>
+  <text x="450" y="157" text-anchor="middle" font-size="14" font-family="ui-monospace, 'SF Mono', Menlo, monospace" fill="#16150f">~/Library/Messages/chat.db</text>
+
+  <path d="M450,174 L450,196 L235,196 L235,222" fill="none" stroke="#16150f" stroke-width="1.2" marker-end="url(#ah)"/>
+  <path d="M450,174 L450,196 L665,196 L665,222" fill="none" stroke="#8a7f6a" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#as)"/>
+
+  <!-- LEFT: bash -->
+  <text x="65" y="248" font-size="11" letter-spacing="2" fill="#1f4d3f">HARD CONTROL</text>
+  <rect x="65" y="260" width="340" height="52" rx="2" fill="#fffdf8" stroke="#16150f" stroke-width="1.2"/>
+  <text x="85" y="282" font-size="13" font-weight="600" fill="#16150f">Bash tool</text>
+  <text x="85" y="301" font-size="12.5" font-family="ui-monospace, 'SF Mono', Menlo, monospace" fill="#54503f">sqlite3 chat.db</text>
+
+  <line x1="235" y1="312" x2="235" y2="348" stroke="#16150f" stroke-width="1.2" marker-end="url(#ah)"/>
+
+  <rect x="65" y="352" width="340" height="72" rx="2" fill="#eaf0eb" stroke="#1f4d3f" stroke-width="1.4"/>
+  <text x="85" y="376" font-size="13" font-weight="600" fill="#1f4d3f">Sandbox — Seatbelt / bubblewrap</text>
+  <text x="85" y="397" font-size="12" fill="#3a4f45">Enforced by the OS on the running</text>
+  <text x="85" y="413" font-size="12" fill="#3a4f45">process, whatever the model chose to run</text>
+
+  <line x1="235" y1="424" x2="235" y2="466" stroke="#16150f" stroke-width="1.2" marker-end="url(#ah)"/>
+
+  <rect x="65" y="470" width="340" height="58" rx="2" fill="#fffdf8" stroke="#c9c2b2" stroke-width="1"/>
+  <text x="85" y="493" font-size="12.5" fill="#16150f">Default read policy: everything, minus a</text>
+  <text x="85" y="511" font-size="12.5" fill="#16150f">denylist you have to write yourself</text>
+
+  <!-- RIGHT: read -->
+  <text x="495" y="248" font-size="11" letter-spacing="2" fill="#8a6a2f">SOFT CONTROL</text>
+  <rect x="495" y="260" width="340" height="52" rx="2" fill="#fffdf8" stroke="#8a7f6a" stroke-width="1.2" stroke-dasharray="5 4"/>
+  <text x="515" y="282" font-size="13" font-weight="600" fill="#16150f">Read / Grep / Glob</text>
+  <text x="515" y="301" font-size="12.5" font-family="ui-monospace, 'SF Mono', Menlo, monospace" fill="#54503f">Read(chat.db)</text>
+
+  <line x1="665" y1="312" x2="665" y2="348" stroke="#8a7f6a" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#as)"/>
+
+  <rect x="495" y="352" width="340" height="72" rx="2" fill="#f4efe2" stroke="#8a6a2f" stroke-width="1.4" stroke-dasharray="5 4"/>
+  <text x="515" y="376" font-size="13" font-weight="600" fill="#8a6a2f">Permission system</text>
+  <text x="515" y="397" font-size="12" fill="#5e5540">Evaluated before the call, from rules and</text>
+  <text x="515" y="413" font-size="12" fill="#5e5540">a classifier. Never enters the sandbox.</text>
+
+  <line x1="665" y1="424" x2="665" y2="466" stroke="#8a7f6a" stroke-width="1.2" stroke-dasharray="5 4" marker-end="url(#as)"/>
+
+  <rect x="495" y="470" width="340" height="58" rx="2" fill="#fffdf8" stroke="#c9c2b2" stroke-width="1"/>
+  <text x="515" y="493" font-size="12.5" fill="#16150f">Default: reads outside the working</text>
+  <text x="515" y="511" font-size="12.5" fill="#16150f">directory are permitted</text>
+
+  <!-- converge -->
+  <path d="M235,528 L235,566 L450,566" fill="none" stroke="#16150f" stroke-width="1.2"/>
+  <path d="M665,528 L665,566 L450,566" fill="none" stroke="#8a7f6a" stroke-width="1.2" stroke-dasharray="5 4"/>
+  <line x1="450" y1="566" x2="450" y2="592" stroke="#16150f" stroke-width="1.2" marker-end="url(#ah)"/>
+
+  <rect x="290" y="596" width="320" height="46" rx="2" fill="#9c3b28"/>
+  <text x="450" y="625" text-anchor="middle" font-size="14" font-weight="600" letter-spacing="1.6" fill="#f7f4ee">READ SUCCEEDS</text>
+
+  <text x="48" y="676" font-size="12" fill="#8a7f6a">Writes are an allowlist. Reads are a denylist that ships almost empty. Only one of these two paths is enforced by the kernel.</text>
+
+</svg>

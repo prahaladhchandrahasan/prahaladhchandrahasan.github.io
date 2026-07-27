@@ -519,6 +519,44 @@ h3 {
   line-height: 1.45;
 }
 
+.article-content h2 {
+  margin-top: 44px;
+  margin-bottom: 14px;
+}
+
+.article-content h3 {
+  margin-top: 28px;
+  margin-bottom: 8px;
+}
+
+.article-content :not(pre) > code {
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 0.1em 0.35em;
+  font-size: 0.9em;
+  overflow-wrap: anywhere;
+}
+
+.article-content pre {
+  margin: 18px 0;
+  padding: 16px 18px;
+  background: var(--surface-muted);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  overflow-x: auto;
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.article-content pre code {
+  display: block;
+  color: var(--text);
+  white-space: pre;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+}
+
 .copy-page-container {
   position: fixed;
   right: 22px;
