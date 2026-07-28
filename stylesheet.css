@@ -557,6 +557,40 @@ h3 {
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
 }
 
+.article-table {
+  overflow-x: auto;
+  margin: 18px 0;
+}
+
+.article-table table {
+  width: 100%;
+  min-width: 540px;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.article-table th,
+.article-table td {
+  border: 1px solid var(--border);
+  padding: 8px 11px;
+  text-align: left;
+  vertical-align: top;
+}
+
+.article-table thead th {
+  background: var(--surface-muted);
+  font-weight: 620;
+}
+
+.article-table .cell-read {
+  color: var(--accent);
+}
+
+.article-table .cell-block {
+  color: var(--green);
+  font-weight: 560;
+}
+
 .copy-page-container {
   position: fixed;
   right: 22px;
