@@ -58,22 +58,22 @@
         <p>You can see the shape of it in the sandbox's resolved config.</p>
 
         <figure class="article-figure">
-          <img src="sandbox-config.png" alt="The /sandbox Config tab: a single denied read path, against roughly forty lines of denied write paths.">
-          <figcaption>Filesystem Read Restrictions, in full, above. Filesystem Write Restrictions, abridged, below it.</figcaption>
+          <img src="sandbox-config.png" alt="The /sandbox Config tab on a clean install: a single denied read path, against roughly forty denied write paths.">
+          <figcaption>The <code>/sandbox</code> Config tab on a clean install. One Filesystem Read Restriction above; roughly forty Write Restrictions below.</figcaption>
         </figure>
 
         <p>Writes are an allowlist: a short list of permitted paths, then forty-odd lines enumerating everything denied inside them. Reads are a denylist, and on a clean install that denylist has exactly one entry, <code>~/.claude/ide</code>. The single path the default read policy protects is the agent's own working directory, not mine. The docs are upfront about this: the default is read access to the whole computer minus a few denied directories, and they note it still permits reading <code>~/.aws/credentials</code> and <code>~/.ssh/</code>.</p>
 
         <p>My favourite detail: <code>~/.ssh</code> appears in the write-deny list. The sandbox will stop an agent from modifying my SSH keys and let it read them. That is the whole thesis of this post sitting in one path in a config file.</p>
 
-        <p>The permission layer tells the same story. Here is the Deny tab on my machine, the rules Claude Code will always reject with no prompt:</p>
+        <p>The permission layer tells the same story. Here is the Deny tab, the rules Claude Code will always reject with no prompt, on a clean install:</p>
 
         <figure class="article-figure">
-          <img src="permissions-deny.png" alt="The Deny tab in /permissions: every rule is a Bash command pattern such as chgrp, chown, dd, fdisk, format.">
-          <figcaption>The Deny tab in <code>/permissions</code>, on my machine. (On a clean install this list is empty; every rule here is one I added.)</figcaption>
+          <img src="permissions-deny.png" alt="The Deny tab in /permissions on a clean install: empty, no rules.">
+          <figcaption>The Deny tab in <code>/permissions</code> on a clean install. Empty.</figcaption>
         </figure>
 
-        <p>Ownership changes, raw disk writes, partition tables. Every entry names a way to damage the machine. None name a way to disclose data. The syntax supports <code>Read(...)</code> rules. Nothing on this screen is one.</p>
+        <p>Nothing is rejected at the permission layer by default, not even destructive commands. The deny rules people do add, the ones on my own machine and the ones the docs hand out as examples, all speak the same language: ownership changes, raw disk writes, partition tables. Every entry names a way to damage the machine. None name a way to disclose data. The syntax supports <code>Read(...)</code> rules. Almost nobody writes them.</p>
 
         <p>Reading is the unguarded path, and reading is the entire privacy threat model. Nothing gets damaged when an agent walks your <code>~/Library</code>. Nothing gets deleted. There is no destructive command to intercept. The cost is measured in what someone now knows about you, and no permission prompt in the stack is denominated in that unit.</p>
 
@@ -193,6 +193,8 @@
         <p>The cleanest result came from removing the permission rule and keeping only the sandbox read-deny. Bash <code>cat</code> was blocked. The Read tool read the file anyway, no prompt, because it never enters the sandbox. Two paths to the same bytes, and you need a rule on each. Neither layer alone closes the file.</p>
 
         <p>Two observations from the run. The refusal is model-dependent: Sonnet 5 declined the bare out-of-workspace read on its own, while Opus 5 went straight to the permission prompt. On defaults the model's judgment is the real first line, and it is not part of the permission or sandbox stack. And after a few repeated attempts to read the denied file, a safety classifier stepped in and switched the session from Opus 5 to Opus 4.8 mid-run.</p>
+
+        <p class="article-footnote">Every step of this run, the config at each stage and a screenshot of every result, is documented in the <a href="experiments/">full experiment log</a>.</p>
 
         <h2>Where the responsibility actually sits</h2>
 

@@ -582,6 +582,19 @@ h3 {
   font-weight: 620;
 }
 
+.article-content .wide-figure img {
+  width: 100%;
+  max-width: 900px;
+}
+
+.article-footnote {
+  margin-top: 28px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
 .article-table .cell-read {
   color: var(--accent);
 }
