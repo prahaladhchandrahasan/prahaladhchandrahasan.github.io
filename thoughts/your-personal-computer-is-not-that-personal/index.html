@@ -222,7 +222,7 @@
 
         <p>The naive version does not work. A syscall carries no record of who wanted it. A <code>read()</code> I typed and a <code>read()</code> a model decided on are the same <code>read()</code>, and no kernel instrumentation tells them apart once the agent has a shell running as me.</p>
 
-        <p>The version that works: stop trying to identify the caller and treat the agent as a <strong>different principal</strong>. Its own user, its own TCC identity, its own seatbelt profile or namespace, with a declared read scope enforced at the syscall layer, so anything outside the scope fails loudly instead of succeeding silently because I once clicked Allow on a terminal emulator. This is the confused deputy problem in new clothes, and the fix has always been least authority, not provenance tracking.</p>
+        <p>The version that works: stop trying to identify the caller and treat the agent as a <strong>different principal</strong>. Its own user, its own TCC identity, its own seatbelt profile or namespace, with a declared read scope enforced at the syscall layer, so anything outside the scope fails loudly instead of succeeding silently because I once clicked Allow on a terminal emulator.</p>
 
         <p>Four reasons this layer beats the ones above it:</p>
 
