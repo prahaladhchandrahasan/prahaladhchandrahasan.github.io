@@ -39,7 +39,7 @@
 
         <h2>How it started</h2>
 
-        <p>A colleague mentioned that Opus 5 had pulled context out of his local iMessages database. So I spent an evening pointing a coding agent at my own laptop to see what it could work out about me. The answer: quite a lot, and none of it required anything clever.</p>
+        <p>A colleague mentioned that Opus 5 had pulled context out of his local iMessages database. So I spent an evening pointing a coding agent at my own laptop to see what it could find out about me when it has full laptop access. The answer: quite a lot, and none of it required anything clever.</p>
 
         <p><strong>NOTE:</strong> I ran this with Opus 5 (high effort) using Claude Code as the harness, on macOS, with Full Disk Access granted to my terminal. Every one of those variables matters. Results will differ for other model, harness, and effort combinations.</p>
 
@@ -53,7 +53,7 @@
 
         <p>The agent is not too powerful. The problem is that every guardrail in the stack points at the wrong risk.</p>
 
-        <p>Look at what the defaults protect. Claude Code <a href="https://code.claude.com/docs/en/security" target="_blank" rel="noopener">starts read-only and asks before it does anything else</a>: it needs approval to run Bash commands that can modify your system, and it cannot write outside the folder you launched it in without asking. Reading paths outside that boundary with Read, Grep, and Glob is a different matter. Its <a href="https://anthropic.com/engineering/claude-code-sandboxing" target="_blank" rel="noopener">sandboxing</a>, real kernel-level isolation (seatbelt on macOS, bubblewrap on Linux), stops the agent from modifying files it should not touch and reaching servers it should not reach.</p>
+        <p>Look at what the defaults protect. Claude Code <a href="https://code.claude.com/docs/en/security" target="_blank" rel="noopener">starts read-only and asks before it does anything else</a>: it needs approval to run Bash commands that can modify your system, and it cannot write outside the folder you launched it in without asking. Reading paths outside that boundary with Read, Grep, and Glob is a different matter. Its <a href="https://www.anthropic.com/engineering/claude-code-sandboxing" target="_blank" rel="noopener">sandboxing</a> is real, enforced by the OS rather than by the model's good intentions (seatbelt on macOS, bubblewrap on Linux), and it stops the agent from modifying files it should not touch and reaching servers it should not reach.</p>
 
         <p>Every one of those is an <strong>integrity</strong> control. Can this thing break my machine? Can it destroy my work? Can it ship something out?</p>
 
@@ -64,9 +64,9 @@
           <figcaption>The <code>/sandbox</code> Config tab on a clean install. One Filesystem Read Restriction above; roughly forty Write Restrictions below.</figcaption>
         </figure>
 
-        <p>Writes are an allowlist: a short list of permitted paths, then forty-odd lines enumerating everything denied inside them. Reads are a denylist, and on a clean install that denylist has exactly one entry, <code>~/.claude/ide</code>. The single path the default read policy protects is the agent's own working directory, not mine. The docs are upfront about this: the default is read access to the whole computer minus a few denied directories, and they note it still permits reading <code>~/.aws/credentials</code> and <code>~/.ssh/</code>.</p>
+        <p>Writes are an allowlist: a short list of permitted paths, then forty-odd lines enumerating everything denied inside them. Reads are a denylist, and on a clean install that denylist has exactly one entry, <code>~/.claude/ide</code>, the directory where Claude Code's editor integration leaves its connection lockfiles and the auth token that goes with them. The single read the default policy protects is the agent's own secret, not any of mine. The docs are upfront about this: the default is read access to the whole computer minus a few denied directories, and they note it still permits reading <code>~/.aws/credentials</code> and <code>~/.ssh/</code>.</p>
 
-        <p>My favourite detail: <code>~/.ssh</code> appears in the write-deny list. The sandbox will stop an agent from modifying my SSH keys and let it read them. That is the whole thesis of this post sitting in one path in a config file.</p>
+        <p>My favourite detail: <code>~/.ssh</code> appears in the write-deny list. The sandbox will stop an agent from modifying my SSH keys and let it read them.</p>
 
         <p>The permission layer tells the same story. Here is the Deny tab, the rules Claude Code will always reject with no prompt, on a clean install:</p>
 
@@ -75,11 +75,11 @@
           <figcaption>The Deny tab in <code>/permissions</code> on a clean install. Empty.</figcaption>
         </figure>
 
-        <p>Nothing is rejected at the permission layer by default, not even destructive commands. The deny rules people do add, the ones on my own machine and the ones the docs hand out as examples, all speak the same language: ownership changes, raw disk writes, partition tables. Every entry names a way to damage the machine. None name a way to disclose data. The syntax supports <code>Read(...)</code> rules. Almost nobody writes them.</p>
+        <p>Nothing is rejected at the permission layer by default, not even destructive commands. Out of the box the layer whose only job is to say no says it to nothing: a destructive command is one approval click away, and the allow rules and permission modes people reach for to stop the prompting remove even that click. The shipped configuration will let an agent take the machine apart. The deny rules people do add, the ones on my own machine and the ones the docs hand out as examples, all speak the same language: ownership changes, raw disk writes, partition tables. Every entry names a way to damage the machine. None name a way to disclose data. The syntax supports <code>Read(...)</code> rules. Almost nobody writes them.</p>
 
         <p>Reading is the unguarded path, and reading is the entire privacy threat model. Nothing gets damaged when an agent walks your <code>~/Library</code>. Nothing gets deleted. There is no destructive command to intercept. The cost is measured in what someone now knows about you, and no permission prompt in the stack is denominated in that unit.</p>
 
-        <p>macOS is the same story one layer down. TCC gates <code>~/Library/Messages</code> and the Photos library. The mechanism exists and it works. But the unit of consent is the <em>app</em>. Grant Full Disk Access to Terminal and everything you launch from it inherits that access, because TCC resolves permissions against the responsible parent process. The OS is answering whether I trust iTerm. That was a good question in 2019. It is not the question anymore. The thing inside iTerm has its own goals, reads faster than any human, and synthesises across sources in a way no <code>grep</code> ever did.</p>
+        <p>macOS is the same story one layer down. TCC gates <code>~/Library/Messages</code> and the Photos library. The mechanism exists and it works. But the unit of consent is the <em>app</em>. Grant Full Disk Access to iTerm and everything you launch from it inherits that access, because TCC walks up the process tree and resolves permissions against the responsible process, not against the thing actually doing the reading. The OS is answering whether I trust iTerm. That was a good question in 2019. It is not the question anymore. The thing inside iTerm has its own goals, reads faster than any human, and synthesises across sources in a way no <code>grep</code> ever did.</p>
 
         <p>The mechanisms exist. They are scoped to the wrong verb and consented to at the wrong granularity.</p>
 
