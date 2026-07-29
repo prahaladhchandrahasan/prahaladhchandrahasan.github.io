@@ -46,19 +46,19 @@
             <thead>
               <tr>
                 <th>How the agent reads it</th>
-                <th>Stock defaults</th>
-                <th>Sandbox on (strict)</th>
-                <th>+ <code>Read</code> deny rule</th>
-                <th>+ sandbox <code>denyRead</code></th>
-                <th>sandbox <code>denyRead</code> alone</th>
+                <th>Stock defaults (no <code>Read</code> deny, sandbox off)</th>
+                <th>Stock defaults (sandbox on)</th>
+                <th><code>Read</code> deny permission</th>
+                <th>Hard sandbox deny rule</th>
+                <th>Both</th>
               </tr>
             </thead>
             <tbody>
-              <tr><td>Read tool</td><td class="cell-read">reads</td><td class="cell-read">reads</td><td class="cell-block">blocked (permission)</td><td class="cell-block">blocked (permission)</td><td class="cell-read">reads</td></tr>
-              <tr><td>Bash <code>cat</code></td><td class="cell-read">reads</td><td class="cell-read">reads</td><td class="cell-block">blocked (permission)</td><td class="cell-block">blocked (permission)</td><td class="cell-block">blocked (sandbox)</td></tr>
-              <tr><td>Bash <code>grep</code></td><td class="cell-read">reads</td><td class="cell-read">reads</td><td class="cell-block">blocked (permission)</td><td class="cell-block">blocked (permission)</td><td class="cell-untested">not tested</td></tr>
-              <tr><td>Bash <code>egrep</code></td><td class="cell-read">reads</td><td class="cell-read">reads</td><td class="cell-read">reads (gap)</td><td class="cell-block">blocked (sandbox)</td><td class="cell-untested">not tested</td></tr>
-              <tr><td><code>python3 -c "open(...)"</code></td><td class="cell-read">reads</td><td class="cell-read">reads</td><td class="cell-read">reads (gap)</td><td class="cell-block">blocked (sandbox)</td><td class="cell-untested">not tested</td></tr>
+              <tr><td>Read tool</td><td class="cell-read">reads</td><td class="cell-read">reads</td><td class="cell-block">blocked (permission)</td><td class="cell-read">reads</td><td class="cell-block">blocked (permission)</td></tr>
+              <tr><td>Bash <code>cat</code></td><td class="cell-read">reads</td><td class="cell-read">reads</td><td class="cell-block">blocked (permission)</td><td class="cell-block">blocked (sandbox)</td><td class="cell-block">blocked (permission)</td></tr>
+              <tr><td>Bash <code>grep</code></td><td class="cell-read">reads</td><td class="cell-read">reads</td><td class="cell-block">blocked (permission)</td><td class="cell-untested">not tested</td><td class="cell-block">blocked (permission)</td></tr>
+              <tr><td>Bash <code>egrep</code></td><td class="cell-read">reads</td><td class="cell-read">reads</td><td class="cell-read">reads (gap)</td><td class="cell-untested">not tested</td><td class="cell-block">blocked (sandbox)</td></tr>
+              <tr><td><code>python3 -c "open(...)"</code></td><td class="cell-read">reads</td><td class="cell-read">reads</td><td class="cell-read">reads (gap)</td><td class="cell-untested">not tested</td><td class="cell-block">blocked (sandbox)</td></tr>
             </tbody>
           </table>
         </div>
