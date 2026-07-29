@@ -564,7 +564,7 @@ h3 {
 
 .article-table table {
   width: 100%;
-  min-width: 540px;
+  min-width: 640px;
   border-collapse: collapse;
   font-size: 0.9rem;
 }
@@ -602,6 +602,10 @@ h3 {
 .article-table .cell-block {
   color: var(--green);
   font-weight: 560;
+}
+
+.article-table .cell-untested {
+  color: var(--muted);
 }
 
 .copy-page-container {

@@ -142,6 +142,7 @@
                 <th>Sandbox on (strict)</th>
                 <th>+ <code>Read</code> deny rule</th>
                 <th>+ sandbox <code>denyRead</code></th>
+                <th>sandbox <code>denyRead</code> alone</th>
               </tr>
             </thead>
             <tbody>
@@ -151,6 +152,7 @@
                 <td class="cell-read">reads</td>
                 <td class="cell-block">blocked (permission)</td>
                 <td class="cell-block">blocked (permission)</td>
+                <td class="cell-read">reads</td>
               </tr>
               <tr>
                 <td>Bash <code>cat</code></td>
@@ -158,6 +160,7 @@
                 <td class="cell-read">reads</td>
                 <td class="cell-block">blocked (permission)</td>
                 <td class="cell-block">blocked (permission)</td>
+                <td class="cell-block">blocked (sandbox)</td>
               </tr>
               <tr>
                 <td>Bash <code>grep</code></td>
@@ -165,6 +168,7 @@
                 <td class="cell-read">reads</td>
                 <td class="cell-block">blocked (permission)</td>
                 <td class="cell-block">blocked (permission)</td>
+                <td class="cell-untested">not tested</td>
               </tr>
               <tr>
                 <td>Bash <code>egrep</code></td>
@@ -172,6 +176,7 @@
                 <td class="cell-read">reads</td>
                 <td class="cell-read">reads (gap)</td>
                 <td class="cell-block">blocked (sandbox)</td>
+                <td class="cell-untested">not tested</td>
               </tr>
               <tr>
                 <td><code>python3 -c "open(...)"</code></td>
@@ -179,12 +184,13 @@
                 <td class="cell-read">reads</td>
                 <td class="cell-read">reads (gap)</td>
                 <td class="cell-block">blocked (sandbox)</td>
+                <td class="cell-untested">not tested</td>
               </tr>
             </tbody>
           </table>
         </div>
 
-        <p><em>Decoy file outside the workspace, canary string inside. Read tool and <code>cat</code> checked in every column; <code>grep</code>, <code>egrep</code>, and <code>python3</code> checked once a deny rule made the outcome non-trivial.</em></p>
+        <p><em>Decoy file outside the workspace, canary string inside. Read tool and <code>cat</code> checked in every column; <code>grep</code>, <code>egrep</code>, and <code>python3</code> checked once a deny rule made the outcome non-trivial. The first four columns tighten cumulatively. The last one is not a fifth step but a step sideways: the permission rule removed, the sandbox read-deny left on its own.</em></p>
 
         <p>On stock defaults the file reads, sandbox off or on, Read tool or <code>cat</code>. On a clean install the read denylist has one entry and the permission deny list is empty. The only thing that ever refused the read was the model's own judgment, not the permission or sandbox layer.</p>
 
@@ -192,7 +198,7 @@
 
         <p>Add <code>sandbox.filesystem.denyRead</code> for the same path and turn the sandbox on, and everything closes. <code>egrep</code> and <code>python3</code> now fail with <em>Operation not permitted</em>, refused by the kernel at <code>open()</code> rather than by a string match.</p>
 
-        <p>The cleanest result came from removing the permission rule and keeping only the sandbox read-deny. Bash <code>cat</code> was blocked. The Read tool read the file anyway, no prompt, because it never enters the sandbox. Two paths to the same bytes, and you need a rule on each. Neither layer alone closes the file.</p>
+        <p>The cleanest result is the last column: remove the permission rule and keep only the sandbox read-deny. Bash <code>cat</code> was blocked. The Read tool read the file anyway, no prompt, because it never enters the sandbox. Two paths to the same bytes, and you need a rule on each. Neither layer alone closes the file.</p>
 
         <p>Two observations from the run. The refusal is model-dependent: Sonnet 5 declined the bare out-of-workspace read on its own, while Opus 5 went straight to the permission prompt. On defaults the model's judgment is the real first line, and it is not part of the permission or sandbox stack. And after a few repeated attempts to read the denied file, a safety classifier stepped in and switched the session from Opus 5 to Opus 4.8 mid-run.</p>
 
@@ -200,17 +206,19 @@
 
         <h3>The model provider</h3>
 
-        <p>Two asks.</p>
+        <p>Four asks.</p>
 
         <p><strong>Zero retention by default on personal plans.</strong> Not as an enterprise line item, as the default for everyone. Consumer plans ship a training toggle that <a href="https://www.anthropic.com/news/updates-to-our-consumer-terms" target="_blank" rel="noopener">defaults to on</a>. Leave it and your chats are <a href="https://privacy.claude.com/en/articles/10023548-how-long-do-you-store-my-data" target="_blank" rel="noopener">retained for up to five years</a>; turn it off and you drop to thirty days. Thirty days beats five years. It is not zero.</p>
 
-        <p><strong>Ship a default read-deny list.</strong> This is the cheapest fix on this page. <code>~/.ssh</code>, <code>~/.aws</code>, <code>~/Library/Messages</code>, the Photos library, browser profiles, Keychain: deny reads on all of it by default, on both the sandbox path and the permission path, and make widening it a deliberate act. I am not asking to allowlist reads wholesale. Agents legitimately read toolchains and global config all day, and a policy that prompts constantly gets switched off. I am asking for the twenty paths that are never a build dependency and always a privacy incident. The usability cost is near zero and it closes most of what I found in an evening.</p>
+        <p><strong>Ship a default read-deny list.</strong> This is the cheapest fix on this page. <code>~/.ssh</code>, <code>~/.aws</code>, <code>~/Library/Messages</code>, the Photos library, browser profiles, Keychain: deny reads on all of it by default, on both the sandbox path and the permission path, and make widening it a deliberate act.</p>
+
+        <p><strong>Widen the sandbox, and make configuring it survivable.</strong> Two parts. The sandbox is the strongest control in the stack and it only covers Bash. Read, Grep, and Glob never enter it, which is why the route the harness steers onto is the route with no OS boundary on it. Extend the boundary to the built-in file tools and the two-paths problem stops existing. Then fix the ergonomics. Read rules and sandbox rules use different path conventions in the same file, there is no default credential list to start from, and a mistake fails silently. A configuration nobody can hold in their head is a configuration that ships unset.</p>
 
         <p><strong>Refuse some of this outright, and keep refusing.</strong> The strongest objection first: refusal is circumventable. <code>chat.db</code> is a SQLite file. An agent that declines to read my iMessages but runs a query against the database behind them has accomplished nothing. True, and not a reason to drop the control.</p>
 
         <p>Not a reason, because almost no privacy harm here is adversarial. The realistic failure is not me tricking a model into reading my messages. It is an agent deciding mid-task that my messages are useful context for something unrelated, being right about that, reading them, and me finding out three tool calls later if at all. Refusal is aimed at the un-considered read, and the un-considered read is the common case. Sandboxing catches the adversary. Refusal catches the afternoon where nobody was being an adversary and my data left anyway.</p>
 
-        <p>Which brings me back to Photos. It refused, then folded, because I said the magic words. I do not want a boundary that any expression of intent clears. If a model has decided a category of data is off-limits by default, the second ask should not unlock it. A deliberate, out-of-band grant should, and it should be visible afterwards.</p>
+        <p>Which brings me back to Photos. It refused, then folded, because I said the magic words. I do not want a boundary that any expression of intent clears. If a model has decided a category of data is off-limits by default, the second ask should not unlock it.</p>
 
         <h3>The OS, which is where the real boundary lives</h3>
 
@@ -227,21 +235,6 @@
           <li><strong>It is vendor-independent.</strong> I would rather enforce one policy at the OS than trust the guardrails of every harness I install this year.</li>
           <li><strong>The audit trail is not written by the thing being audited.</strong> An agent-generated log is a self-report. A kernel log is evidence.</li>
           <li><strong>It does not need relitigating every model release.</strong> Model behaviour is a moving target by design. A seatbelt profile is not.</li>
-        </ol>
-
-        <p>None of this is hypothetical. Seatbelt and bubblewrap already do the enforcement. The sandbox already proves the mechanism works and that the performance cost is negligible. What is missing is coverage (it is scoped to one tool surface and one verb) and defaults. The layer is right. The wiring is not finished.</p>
-
-        <p>There is precedent. Browsers, mobile apps, containers: every previous instance of untrusted code running with the user's authority ended at OS isolation, not at asking the code nicely.</p>
-
-        <p>The honest limit: containment is not confidentiality. Sandbox an agent to a single repo and that repo still goes over the wire to an inference endpoint. The kernel cannot block the one destination that defines the product. OS separation answers compromise and misdirection. It says nothing about authorised exposure: what is kept, what is trained on, what a third party can later reach. That is why the provider asks above are not optional extras.</p>
-
-        <h3>Us</h3>
-
-        <ol>
-          <li><strong>Get your secrets off disk.</strong> Keychain, short-lived tokens, <code>gitleaks</code> in a pre-commit hook. If an agent can read your keys in plaintext, so could a malicious postinstall, and it would not have asked first.</li>
-          <li><strong>Run agents from a terminal without Full Disk Access.</strong> Keep a second terminal that has it for the rare case where you mean it. This one change would have prevented everything in this post, and it costs one entry in System Settings.</li>
-          <li><strong>Read your traces sometimes.</strong> If you asked for a summary of your bank statements and a tool call is reaching into Messages, that is worth knowing. A monitoring agent is not the answer; that is a second thing reading everything the first thing read.</li>
-          <li><strong>Decide what stays off the machine entirely.</strong> The boring answer, and the only one that fully works.</li>
         </ol>
 
         <h2>The question I do not have an answer to</h2>
