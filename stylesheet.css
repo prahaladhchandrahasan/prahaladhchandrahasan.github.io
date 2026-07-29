@@ -604,10 +604,6 @@ h3 {
   font-weight: 560;
 }
 
-.article-table .cell-untested {
-  color: var(--muted);
-}
-
 .copy-page-container {
   position: fixed;
   right: 22px;
