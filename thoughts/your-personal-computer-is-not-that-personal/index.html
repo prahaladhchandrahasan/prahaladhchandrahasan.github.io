@@ -85,8 +85,6 @@
 
         <p>macOS is the same story one layer down. TCC gates <code>~/Library/Messages</code> and the Photos library. The mechanism exists and it works. But the unit of consent is the <em>app</em>. Grant Full Disk Access to iTerm and everything you launch from it inherits that access, because TCC walks up the process tree and resolves permissions against the responsible process, not against the thing actually doing the reading. The OS is answering whether I trust iTerm. That was a good question in 2019. It is not the question anymore. The thing inside iTerm has its own goals, reads faster than any human, and synthesises across sources in a way no <code>grep</code> ever did.</p>
 
-        <p>The mechanisms exist. They are scoped to the wrong verb and consented to at the wrong granularity.</p>
-
         <h2>A second adversary</h2>
 
         <p>I started by worrying about the model provider, and I still do. But there is a second adversary I had not modelled at all.</p>
