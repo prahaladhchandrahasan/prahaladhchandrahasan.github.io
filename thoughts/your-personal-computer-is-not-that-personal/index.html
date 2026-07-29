@@ -53,6 +53,8 @@
 
         <p>The agent is not too powerful. The problem is that every guardrail in the stack points at the wrong risk.</p>
 
+        <p>There are only two ways to fix that, and they work on different things. You can make the agent less <em>willing</em> to read what it should not, which is alignment work. Or you can make it less <em>able</em> to, which is a boundary the operating system enforces. Willingness bends. It can be argued with, and it can be borrowed by anyone who gets a sentence into the context window. A boundary does not bend, but it cannot tell a careless read from a deliberate one, so it has nothing to say about the read that should never have been considered in the first place. Each one fails where the other holds. The answer is not to pick.</p>
+
         <p>Two different things get called guardrails here, and they are worth separating. <strong>Permissions</strong> are policy inside the harness: rules about which tool calls run, which are refused outright, and which stop to ask me. <strong>Sandboxing</strong> is a boundary outside it, enforced by the operating system, and it holds whether or not the model cooperates and whether or not I ever wrote a rule. They live in different places, they fail differently, and only one of them ships with anything in it. What they have in common is the risk they were built around.</p>
 
         <p>Look at what the defaults protect. Claude Code <a href="https://code.claude.com/docs/en/security" target="_blank" rel="noopener">starts read-only and asks before it does anything else</a>: it needs approval to run Bash commands that can modify your system, and it cannot write outside the folder you launched it in without asking. Reading paths outside that boundary with Read, Grep, and Glob is a different matter. Its <a href="https://www.anthropic.com/engineering/claude-code-sandboxing" target="_blank" rel="noopener">sandboxing</a> is real, enforced by the OS rather than by the model's good intentions or by a deny rule someone remembered to write (seatbelt on macOS, bubblewrap on Linux), and it stops the agent from modifying files it should not touch and reaching servers it should not reach.</p>
@@ -87,9 +89,11 @@
 
         <h2>A second adversary</h2>
 
-        <p>I started by worrying about the model provider, and I still do. But there is a second adversary I had not modelled at all.</p>
+        <p>This is where the willingness side hits its ceiling. So far the question has been what the agent decides to do. There is a second question, which is who gets to decide.</p>
 
         <p>An agent with read access to your home directory and an outbound network connection is a general-purpose exfiltration primitive waiting for a sentence in its context window. That sentence does not have to come from you. It can come from the README in the repo you just cloned, a dependency you just installed, or a page the agent just fetched. At that point your data is not going to a provider under a retention policy you can read. It is going to whoever wrote the sentence, under no policy at all.</p>
+
+        <p>Note what does not help here. The model is not misbehaving. Its judgment is intact and entirely beside the point, because it is following an instruction it found rather than one it formed. No amount of good conscience closes this, and that is the whole argument for the second axis: a boundary the agent cannot be talked past, because nothing in it is listening.</p>
 
         <p>This also reframes the API keys. The finding is not that the model read my keys. It is that live credentials were sitting in plaintext in dotfiles and git history, where any compromised postinstall script could have taken them years ago without asking. The agent did not create that exposure. It made it legible in an afternoon.</p>
 
@@ -123,7 +127,9 @@
   }
 }</code></pre>
 
-        <p>This is maybe fifteen minutes with the docs open. But it is fifteen minutes you have to know to spend, on a list you have to think up yourself, and the failure mode of getting it wrong is silent. Nothing tells you your Photos library was readable the whole time. The write side ships with forty-odd denied paths you never had to think about.</p>
+        <p>Note the double slash. Absolute paths in <code>Read</code> rules use <code>//</code>, while sandbox filesystem paths use ordinary <code>/</code> and <code>~/</code>: two conventions in one file for the same idea. And <code>sandbox.credentials</code>, the setting that sounds built for exactly this, covers <code>cat ~/.ssh/id_rsa</code> but not a <code>Read</code> of the same file, because it is scoped to sandboxed Bash commands.</p>
+
+        <p>This is maybe fifteen minutes with the docs open. But it is fifteen minutes you have to know to spend, on a list you have to think up yourself, in a syntax that changes between adjacent sections of the same file, and the failure mode of getting it wrong is silent. Nothing tells you your Photos library was readable the whole time.</p>
 
         <h2>I tested it</h2>
 
@@ -212,19 +218,19 @@
 
         <p><strong>Refuse some of this outright, and keep refusing.</strong> The strongest objection first: refusal is circumventable. <code>chat.db</code> is a SQLite file. An agent that declines to read my iMessages but runs a query against the database behind them has accomplished nothing. True, and not a reason to drop the control.</p>
 
-        <p>Not a reason, because almost no privacy harm here is adversarial. The realistic failure is not me tricking a model into reading my messages. It is an agent deciding mid-task that my messages are useful context for something unrelated, being right about that, reading them, and me finding out three tool calls later if at all. Refusal is aimed at the un-considered read, and the un-considered read is the common case. Sandboxing catches the adversary. Refusal catches the afternoon where nobody was being an adversary and my data left anyway.</p>
+        <p>Not a reason, because almost no privacy harm here is adversarial. The realistic failure is not me tricking a model into reading my messages. It is an agent deciding mid-task that my messages are useful context for something unrelated, being right about that, reading them, and me finding out three tool calls later if at all. Refusal is aimed at the un-considered read, and the un-considered read is the common case. Refusal is not a boundary and I am not asking anyone to treat it as one: it is a default, and defaults decide what happens on the ordinary afternoon. Sandboxing catches the adversary. Refusal catches the afternoon where nobody was being an adversary and my data left anyway.</p>
 
         <p>Which brings me back to Photos. It refused, then folded, because I said the magic words. I do not want a boundary that any expression of intent clears. If a model has decided a category of data is off-limits by default, the second ask should not unlock it.</p>
 
-        <h3>The OS, which is where the real boundary lives</h3>
+        <h3>The OS, which is where the hard boundary belongs</h3>
 
-        <p>OS-level separation is the strongest boundary available. Everything above it is mitigation.</p>
+        <p>OS-level separation is the only control here that does not depend on the agent cooperating. That does not make the layers above it decoration. It makes them a different job: they decide what gets considered, this decides what is possible.</p>
 
         <p>The naive version does not work. A syscall carries no record of who wanted it. A <code>read()</code> I typed and a <code>read()</code> a model decided on are the same <code>read()</code>, and no kernel instrumentation tells them apart once the agent has a shell running as me.</p>
 
         <p>The version that works: stop trying to identify the caller and treat the agent as a <strong>different principal</strong>. Its own user, its own TCC identity, its own seatbelt profile or namespace, with a declared read scope enforced at the syscall layer, so anything outside the scope fails loudly instead of succeeding silently because I once clicked Allow on a terminal emulator.</p>
 
-        <p>Four reasons this layer beats the ones above it:</p>
+        <p>Four things only this layer can do:</p>
 
         <ol>
           <li><strong>It fails closed.</strong> Refusals, hooks, and harness permissions are software the agent's own reasoning routes through. Kernel enforcement is not.</li>
@@ -232,6 +238,8 @@
           <li><strong>The audit trail is not written by the thing being audited.</strong> An agent-generated log is a self-report. A kernel log is evidence.</li>
           <li><strong>It does not need relitigating every model release.</strong> Model behaviour is a moving target by design. A seatbelt profile is not.</li>
         </ol>
+
+        <p>And the honest limit, which is why neither axis is sufficient on its own: containment is not confidentiality. Sandbox an agent to a single repo and that repo still goes over the wire to an inference endpoint. No boundary on my machine can block the one destination that defines the product. Conscience and containment both answer the question of what gets read. Neither says anything about what happens to it afterwards: what is kept, what is trained on, what a third party can later reach. That is a third axis, and it is why the retention ask is not an optional extra.</p>
 
         <h2>The question I do not have an answer to</h2>
 
