@@ -98,7 +98,7 @@
 
         <h2>Two paths to the same bytes</h2>
 
-        <p>The sandbox isolates <strong>Bash subprocesses</strong>. That is its whole scope. The built-in file tools never enter it: Read, Edit, and Write are gated by the permission system instead, and Grep and Glob are tools too, not shell commands, so searching your disk never touches Bash either. The <a href="https://code.claude.com/docs/en/sandboxing" target="_blank" rel="noopener">sandboxing docs</a> state it plainly: permission rules apply to every tool, sandboxing applies to Bash commands and their children. Two layers, each covering a different set of things, and two routes to the same file.</p>
+        <p>The sandbox isolates <strong>Bash subprocesses</strong>. That is its whole scope. The built-in file tools never enter it: Read, Edit, and Write are gated by the permission system instead, and Grep and Glob are tools too, not shell commands, so searching your disk never touches Bash either. The <a href="https://code.claude.com/docs/en/sandboxing#permission-rules" target="_blank" rel="noopener">sandboxing docs</a> state it plainly: permission rules apply to every tool, sandboxing applies to Bash commands and their children. Two layers, each covering a different set of things, and two routes to the same file.</p>
 
         <figure class="article-figure">
           <img src="two-paths.svg" alt="Two paths to the same file: a Bash command runs inside the OS-enforced sandbox, while the Read tool is gated only by the permission system. Both reads succeed by default.">
@@ -107,11 +107,9 @@
 
         <p>The read I actually exercised was never sandboxed, and that is not luck. Claude Code's <a href="https://github.com/anasfik/claude-code-prompts-reference/blob/main/tools/shell-tools.md" target="_blank" rel="noopener">tool instructions</a>, which ship with the harness rather than in the docs, tell the model to prefer the built-ins: always use Grep for search, never invoke <code>grep</code> or <code>rg</code> through Bash, use Read rather than <code>cat</code>. That is sensible on its own terms, because the tools are faster and return structured output. It also means the route the harness steers onto by default is the route with no OS boundary on it.</p>
 
-        <p>So the thing standing between an agent and your files is the permission layer, and it is a weaker kind of control. <a href="https://code.claude.com/docs/en/sandboxing#permission-rules" target="_blank" rel="noopener">Permission decisions</a> are made before a command runs, from the command string and, in auto mode, a classifier's judgment about whether it looks safe. A deny rule is the pattern-matching half of that, so it needs a hand-maintained list of what counts as reading a file, and the list has holes. The <a href="https://code.claude.com/docs/en/permissions#read-and-edit" target="_blank" rel="noopener">permissions docs</a> say <code>Read</code> and <code>Edit</code> rules cover the built-in file tools and the file commands recognised in Bash, such as <code>cat</code>, <code>head</code>, <code>tail</code>, and <code>sed</code>. I found <code>grep</code> is recognised too. <code>egrep</code> and <code>fgrep</code> are not, and nothing matching command strings can see the read inside <code>python3 -c "open('chat.db')"</code>.</p>
+        <p>So the layer standing between an agent and your files is the permission layer, and it works by <a href="https://code.claude.com/docs/en/permissions#read-and-edit" target="_blank" rel="noopener">matching command strings</a> rather than by constraining the process. That means it needs a hand-maintained list of what counts as reading a file, and a list like that has holes. The next section is me finding them.</p>
 
-        <p>The sandbox does not work this way. It never inspects the command, it constrains the process, so <code>cat</code>, <code>egrep</code>, and a Python one-liner are all the same to it. A control that matches strings has to anticipate every way of reading a file. A control enforced on the process does not have to know any of them.</p>
-
-        <p>There is no built-in credential deny list. Only what you list yourself is restricted. So you write it out by hand, path by path, in <code>settings.json</code>:</p>
+        <p>It also ships with nothing in it. There is no built-in credential deny list, so only what you write down yourself is restricted, path by path, in <code>settings.json</code>:</p>
 
         <pre><code>{
   "permissions": {
@@ -126,9 +124,7 @@
   }
 }</code></pre>
 
-        <p>Note the double slash. Absolute paths in <code>Read</code> rules use <code>//</code>, while sandbox filesystem paths use ordinary <code>/</code> and <code>~/</code>: two conventions in one file for the same idea. And <code>sandbox.credentials</code>, the setting that sounds built for exactly this, covers <code>cat ~/.ssh/id_rsa</code> but not a <code>Read</code> of the same file, because it is scoped to sandboxed Bash commands.</p>
-
-        <p>This is maybe fifteen minutes with the docs open. But it is fifteen minutes you have to know to spend, on a list you have to think up yourself, in a syntax that changes between adjacent sections of the same file, and the failure mode of getting it wrong is silent. Nothing tells you your Photos library was readable the whole time.</p>
+        <p>Note the double slash, which absolute <code>Read</code> paths need and sandbox paths do not. This is maybe fifteen minutes with the docs open, but it is fifteen minutes you have to know to spend, on a list you have to think up yourself, and the failure mode of getting it wrong is silent. Nothing tells you your Photos library was readable the whole time.</p>
 
         <h2>I tested it</h2>
 
@@ -213,7 +209,7 @@
 
         <p><strong>Ship a default read-deny list.</strong> This is the cheapest fix on this page. <code>~/.ssh</code>, <code>~/.aws</code>, <code>~/Library/Messages</code>, the Photos library, browser profiles, Keychain: deny reads on all of it by default, on both the sandbox path and the permission path, and make widening it a deliberate act. This is also the one ask that survives the problem above. Deny rules are evaluated before anything else and they are not prompts, so they hold in <code>auto</code>, in <code>acceptEdits</code>, and in <code>bypassPermissions</code>: the exact modes people turn on to stop being asked. Everything else in the stack degrades when you stop reading prompts. A deny rule does not.</p>
 
-        <p><strong>Widen the sandbox, and make configuring it survivable.</strong> Two parts. The sandbox is the strongest control in the stack and it only covers Bash. Read, Grep, and Glob never enter it, which is why the route the harness steers onto is the route with no OS boundary on it. Extend the boundary to the built-in file tools and the two-paths problem stops existing. Then fix the ergonomics. Read rules and sandbox rules use different path conventions in the same file, there is no default credential list to start from, and a mistake fails silently. A configuration nobody can hold in their head is a configuration that ships unset.</p>
+        <p><strong>Widen the sandbox, and make configuring it survivable.</strong> Two parts. The sandbox is the strongest control in the stack and it only covers Bash. Read, Grep, and Glob never enter it, which is why the route the harness steers onto is the route with no OS boundary on it. Extend the boundary to the built-in file tools and the two-paths problem stops existing. Then fix the ergonomics. Absolute paths in <code>Read</code> rules need a double slash while sandbox filesystem paths take an ordinary one, two conventions in one file for the same idea. <code>sandbox.credentials</code>, the setting that sounds built for exactly this, covers <code>cat ~/.ssh/id_rsa</code> but not a <code>Read</code> of the same file, because it is scoped to sandboxed Bash commands. There is no default credential list to start from, and a mistake fails silently. A configuration nobody can hold in their head is a configuration that ships unset.</p>
 
         <p><strong>Refuse some of this outright, and keep refusing.</strong> The strongest objection first: refusal is circumventable. <code>chat.db</code> is a SQLite file. An agent that declines to read my iMessages but runs a query against the database behind them has accomplished nothing. True, and not a reason to drop the control.</p>
 
