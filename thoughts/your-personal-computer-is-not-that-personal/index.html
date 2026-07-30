@@ -57,9 +57,9 @@
 
         <p>There is one more question underneath all three, and none of them touches it: what happens to data the agent read legitimately, on a task I asked for. That one is not about my machine at all, and I will come back to it.</p>
 
-        <p>The lower two are both configured in Claude Code and are easy to confuse. Permissions are policy: rules about which tool calls run, which are refused outright, and which stop to ask me. The sandbox is a boundary, enforced by the operating system, and it holds whether or not the model cooperates and whether or not I ever wrote a rule. They live in different places, they fail differently, and only one of them ships with anything in it. What they have in common is the risk they were built around: both are aimed at what an agent might break, not at what it might learn.</p>
+        <p>The lower two are both configured in Claude Code, and easy to confuse. Permissions are policy: rules about which tool calls run, which are refused outright, and which stop to ask me. The sandbox is a boundary, enforced by the operating system, and it holds whether or not the model cooperates and whether or not I ever wrote a rule. They live in different places, they fail differently, and only one of them ships with anything in it. What they have in common is the risk they were built around: both are aimed at what an agent might break, not at what it might learn.</p>
 
-        <p>Look at what the defaults protect. Claude Code <a href="https://code.claude.com/docs/en/security" target="_blank" rel="noopener">starts read-only and asks before it does anything else</a>: it needs approval to run Bash commands that can modify your system, and it cannot write outside the folder you launched it in without asking. Reading paths outside that boundary with Read, Grep, and Glob is a different matter. Its <a href="https://www.anthropic.com/engineering/claude-code-sandboxing" target="_blank" rel="noopener">sandboxing</a> is real, enforced by the OS rather than by the model's good intentions or by a deny rule someone remembered to write (seatbelt on macOS, bubblewrap on Linux), and it stops the agent from modifying files it should not touch and reaching servers it should not reach.</p>
+        <p>Look at what the defaults protect. Claude Code <a href="https://code.claude.com/docs/en/security" target="_blank" rel="noopener">starts read-only and asks before it does anything else</a>: it needs approval to run Bash commands that can modify your system, and it cannot write outside the folder you launched it in without asking. Reading paths outside that boundary with Read, Grep, and Glob is a different matter. Its <a href="https://www.anthropic.com/engineering/claude-code-sandboxing" target="_blank" rel="noopener">sandboxing</a> is real, enforced by the OS (seatbelt on macOS, bubblewrap on Linux) rather than by the model's good intentions or by a deny rule someone remembered to write, and it stops the agent from modifying files it should not touch and reaching servers it should not reach.</p>
 
         <p>You can see the shape of it in the sandbox's resolved config.</p>
 
@@ -81,7 +81,7 @@
 
         <p>Nothing is rejected at the permission layer by default, not even destructive commands. Nothing is pre-approved either. The permission layer ships empty in both directions, which means it makes no decisions at all: it forwards every one of them to me, at the moment the agent wants to act. Out of the box the layer whose only job is to say no says it to nothing, and a command that would take the machine apart is one approval click away.</p>
 
-        <p>Which is where the design runs into what people actually want. Read-only-and-ask is a defensible default and a miserable way to work. The entire promise of an agent is that it runs for an hour while you do something else, and every prompt is a place where that stops and waits for you. Sit through forty of them and you stop reading them. So people do the rational thing: they allowlist broadly, or they switch the asking off, and they decide it once, early, thinking about how much less often they will have to hit approve and not about what is in <code>~/Library</code>. The configuration a long-running agent is actually operating under is rarely the shipped default. It is the shipped default with the asking removed, which leaves the sandbox as the only thing still enforcing anything, and the sandbox was never watching reads.</p>
+        <p>Which is where the design runs into what people actually want. Read-only-and-ask is a defensible default and a miserable way to work. The entire promise of an agent is that it runs for an hour while you do something else, and every prompt is a place where that stops and waits for you. Sit through forty of them and you stop reading them. So people do the rational thing: they allowlist broadly, or they switch the asking off, and they decide it once, early, thinking about how much less often they will have to hit approve and not about what is in <code>~/Library</code>. The configuration a long-running agent is actually operating under is rarely the shipped default. It is the shipped default with the asking removed. And the sandbox is off in that default too, so nothing is left holding the line. Even switched on, it was never watching reads.</p>
 
         <p>Reading is the unguarded path, and reading is the entire privacy threat model. Nothing gets damaged when an agent walks your <code>~/Library</code>. Nothing gets deleted. There is no destructive command to intercept. The cost is measured in what someone now knows about you, and no permission prompt in the stack is denominated in that unit.</p>
 
@@ -89,11 +89,11 @@
 
         <h2>A second adversary</h2>
 
-        <p>This is where the judgment layer hits its ceiling. So far the question has been what the agent decides to do. There is a second question, which is who gets to decide.</p>
+        <p>So far the question has been what the agent decides to do. There is a second question, which is who gets to decide, and it is where the judgment layer hits its ceiling.</p>
 
         <p>An agent with read access to your home directory and an outbound network connection is a general-purpose exfiltration primitive waiting for a sentence in its context window. That sentence does not have to come from you. It can come from the README in the repo you just cloned, a dependency you just installed, or a page the agent just fetched. At that point your data is not going to a provider under a retention policy you can read. It is going to whoever wrote the sentence, under no policy at all.</p>
 
-        <p>Note what does not help here. The model is not misbehaving. Its judgment is intact and entirely beside the point, because it is following an instruction it found rather than one it formed. No amount of good conscience closes this, and that is the whole argument for the hardest of the three: a boundary the agent cannot be talked past, because nothing in it is listening.</p>
+        <p>The model is not misbehaving. Its judgment is intact and entirely beside the point, because it is following an instruction it found rather than one it formed. No amount of good conscience closes this, and that is the whole argument for the hardest of the three: a boundary the agent cannot be talked past, because nothing in it is listening.</p>
 
         <p>This also reframes the API keys. The finding is not that the model read my keys. It is that live credentials were sitting in plaintext in dotfiles and git history, where any compromised postinstall script could have taken them years ago without asking. The agent did not create that exposure. It made it legible in an afternoon.</p>
 
@@ -103,9 +103,9 @@
 
         <p>The read I actually exercised was never sandboxed, and that is not luck. Claude Code's <a href="https://github.com/anasfik/claude-code-prompts-reference/blob/main/tools/shell-tools.md" target="_blank" rel="noopener">tool instructions</a>, which ship with the harness rather than in the docs, tell the model to prefer the built-ins: always use Grep for search, never invoke <code>grep</code> or <code>rg</code> through Bash, use Read rather than <code>cat</code>. That is sensible on its own terms, because the tools are faster and return structured output. It also means the route the harness steers onto by default is the route with no OS boundary on it.</p>
 
-        <p>So the layer standing between an agent and your files is the permission layer, and it works by <a href="https://code.claude.com/docs/en/permissions#read-and-edit" target="_blank" rel="noopener">matching command strings</a> rather than by constraining the process. That means it needs a hand-maintained list of what counts as reading a file, and a list like that has holes. The next section is me finding them.</p>
+        <p>So on that route the only thing between an agent and your files is the permission layer, and it works by <a href="https://code.claude.com/docs/en/permissions#read-and-edit" target="_blank" rel="noopener">matching command strings</a> rather than by constraining the process. That means it needs a hand-maintained list of what counts as reading a file, and a list like that has holes. The next section is me finding them.</p>
 
-        <p>It also ships with nothing in it. There is no built-in credential deny list, so only what you write down yourself is restricted, path by path, in <code>settings.json</code>:</p>
+        <p>There is no built-in credential deny list either, so only what you write down yourself is restricted, path by path, in <code>settings.json</code>:</p>
 
         <pre><code>{
   "permissions": {
@@ -120,7 +120,7 @@
   }
 }</code></pre>
 
-        <p>Note the double slash, which absolute <code>Read</code> paths need and sandbox paths do not. This is maybe fifteen minutes with the docs open, but it is fifteen minutes you have to know to spend, on a list you have to think up yourself, and the failure mode of getting it wrong is silent. Nothing tells you your Photos library was readable the whole time.</p>
+        <p>Note the double slash: absolute paths in a <code>Read</code> rule need it. This is maybe fifteen minutes with the docs open, but it is fifteen minutes you have to know to spend, on a list you have to think up yourself, and the failure mode of getting it wrong is silent. Nothing tells you your Photos library was readable the whole time.</p>
 
         <h2>I tested it</h2>
 
@@ -185,7 +185,7 @@
 
         <p><em>Decoy file outside the workspace, canary string inside. Read tool and <code>cat</code> checked in every column; <code>grep</code>, <code>egrep</code>, and <code>python3</code> checked once a deny rule made the outcome non-trivial. The last three columns are alternatives rather than steps: each layer on its own, then the two together.</em></p>
 
-        <p>On stock defaults the file reads, sandbox off or on, Read tool or <code>cat</code>. On a clean install the read denylist has one entry and the permission deny list is empty. Nothing in either layer refused it. The only refusals I saw at all came from the model itself, and they were not consistent, which I come back to below.</p>
+        <p>On stock defaults the file reads, sandbox off or on, Read tool or <code>cat</code>. Nothing in either layer refused it, because on a clean install there is nothing in either layer to refuse with. The only refusals I saw at all came from the model itself, and they were not consistent, which I come back to below.</p>
 
         <p>Add a <code>Read</code> deny rule and the Read tool is blocked, and so is <code>cat</code>, because the deny extends to the file commands Claude Code recognises. <code>egrep</code> walks straight past, because it is not on the recognised list. <code>python3 -c "open(...).read()"</code> walks past too, because the read is hidden inside interpreter code that no command-string matcher can inspect.</p>
 
@@ -201,7 +201,7 @@
 
         <p>Four asks.</p>
 
-        <p><strong>Zero retention by default on personal plans.</strong> Not as an enterprise line item, as the default for everyone. Consumer plans ship a training toggle that <a href="https://www.anthropic.com/news/updates-to-our-consumer-terms" target="_blank" rel="noopener">defaults to on</a>. Leave it and your chats are <a href="https://privacy.claude.com/en/articles/10023548-how-long-do-you-store-my-data" target="_blank" rel="noopener">retained for up to five years</a>; turn it off and you drop to thirty days. Thirty days beats five years. It is not zero. For personal data the holding is the risk, not just the window: a copy of my <code>chat.db</code> on someone else's disk is an exposure that outlives the task that produced it, governed by a policy I did not write and that can change without me. This is the question I left hanging at the top, and it is the only ask here that helps the person who configured nothing. Judgment bends and the other two layers need setting up. Retention is what decides the cost when neither happened.</p>
+        <p><strong>Zero retention by default on personal plans.</strong> Not as an enterprise line item, as the default for everyone. Consumer plans ship a training toggle that <a href="https://www.anthropic.com/news/updates-to-our-consumer-terms" target="_blank" rel="noopener">defaults to on</a>. Leave it and your chats are <a href="https://privacy.claude.com/en/articles/10023548-how-long-do-you-store-my-data" target="_blank" rel="noopener">retained for up to five years</a>; turn it off and you drop to thirty days. Thirty days beats five years. It is not zero. For personal data the holding is the risk, not just the window: a copy of my <code>chat.db</code> on someone else's disk is an exposure that outlives the task that produced it, governed by a policy I did not write and that can change without me. This is the question I left hanging at the top, and it is the only ask here that helps the person who configured nothing. Judgment bends, and the other two layers only work if somebody set them up. Retention decides what it costs when none of that happened.</p>
 
         <p><strong>Ship a default read-deny list.</strong> This is the cheapest fix on this page. <code>~/.ssh</code>, <code>~/.aws</code>, <code>~/Library/Messages</code>, the Photos library, browser profiles, Keychain: deny reads on all of it by default, on both the sandbox path and the permission path, and make widening it a deliberate act. This is also the one ask that survives the switch-it-off problem. Deny rules are evaluated before anything else and they are not prompts, so they hold in <code>auto</code>, in <code>acceptEdits</code>, and in <code>bypassPermissions</code>: the exact modes people turn on to stop being asked. Everything else in the stack degrades when you stop reading prompts. A deny rule does not. What it cannot do is catch a read nobody thought to list, which is how <code>egrep</code> and <code>python3</code> got through above. Robust against the modes people actually use, weak against the command it does not recognise.</p>
 
@@ -209,30 +209,29 @@
 
         <p><strong>Refuse some of this outright, and keep refusing.</strong> The strongest objection first: refusal is circumventable. <code>chat.db</code> is a SQLite file. An agent that declines to read my iMessages but runs a query against the database behind them has accomplished nothing. True, and not a reason to drop the control.</p>
 
-        <p>Not a reason, because almost no privacy harm here is adversarial. The realistic failure is not me tricking a model into reading my messages. It is an agent deciding mid-task that my messages are useful context for something unrelated, being right about that, reading them, and me finding out three tool calls later if at all. Refusal is aimed at the un-considered read, and the un-considered read is the common case. Refusal is not a boundary and I am not asking anyone to treat it as one: it is a default, and defaults decide what happens on the ordinary afternoon. Sandboxing catches the adversary. Refusal catches the afternoon where nobody was being an adversary and my data left anyway.</p>
+        <p>Not a reason, because almost no privacy harm here is adversarial. The realistic failure is not me tricking a model into reading my messages. It is an agent deciding mid-task that my messages are useful context for something unrelated, being right about that, reading them, and me finding out three tool calls later if at all. Refusal is aimed at the un-considered read, and the un-considered read is the common case. Refusal is not a boundary and I am not asking anyone to treat it as one: it is a default, and defaults decide what happens on the ordinary afternoon. Sandboxing catches the adversary. Refusal catches the afternoon when nobody was being an adversary and my data left anyway.</p>
 
         <p>Which brings me back to Photos. It refused, then folded, because I said the magic words. I do not want a boundary that any expression of intent clears. If a model has decided a category of data is off-limits by default, the second ask should not unlock it.</p>
 
         <h3>The OS, which is where the hard boundary belongs</h3>
 
-        <p>OS-level separation is the only control here that needs neither the agent's cooperation nor a list of what to look for. That does not make the layers above it decoration. It makes them a different job: they decide what gets considered, this decides what is possible.</p>
+        <p>OS-level separation is the hardest stop of the three. That does not make the layers above it decoration. It makes them a different job: they decide what gets considered, this decides what is possible.</p>
 
         <p>The naive version does not work. A syscall carries no record of who wanted it. A <code>read()</code> I typed and a <code>read()</code> a model decided on are the same <code>read()</code>, and no kernel instrumentation tells them apart once the agent has a shell running as me.</p>
 
         <p>The version that works: stop trying to identify the caller and treat the agent as a <strong>different principal</strong>. Its own user, its own TCC identity, its own seatbelt profile or namespace, with a declared read scope enforced at the syscall layer, so anything outside the scope fails loudly instead of succeeding silently because I once clicked Allow on a terminal emulator.</p>
 
-        <p>And it should be one primitive, not one per vendor. I do not want Claude Code to ship a sandbox, Codex to ship a different one with different gaps, and whatever I install next year to ship none. I want the operating system to offer an agent identity the way it already offers a user account: a scope I declare once, in one place, in one syntax, that every harness plugs into and none of them reimplements. That has to be a joint effort. Apple and the Linux side have to expose the primitive and make declaring a scope something a normal person can do. The harness vendors have to adopt it rather than rebuild it badly. Neither half is worth much alone, and right now neither half exists.</p>
-
-        <p>Four things only this layer can do:</p>
+        <p>Three things only this layer can do:</p>
 
         <ol>
-          <li><strong>It fails closed.</strong> A refusal is the model's own reasoning, and a deny rule only catches what it recognises. Kernel enforcement needs neither cooperation nor recognition.</li>
-          <li><strong>It is vendor-independent.</strong> I would rather enforce one policy at the OS than trust the guardrails of every harness I install this year.</li>
+          <li><strong>It cannot be routed around.</strong> A refusal is the model's own reasoning, and a deny rule only catches what it recognises. Kernel enforcement needs neither cooperation nor recognition.</li>
           <li><strong>The audit trail is not written by the thing being audited.</strong> An agent-generated log is a self-report. A kernel log is evidence.</li>
           <li><strong>It does not need relitigating every model release.</strong> Model behaviour is a moving target by design. A seatbelt profile is not.</li>
         </ol>
 
-        <p>And the honest limit, which is why no layer here is sufficient on its own: containment is not confidentiality. Sandbox an agent to a single repo and that repo still goes over the wire to an inference endpoint. No boundary on my machine can block the one destination that defines the product. All three layers answer the question of what gets read. Neither says anything about what happens to it afterwards: what is kept, what is trained on, what a third party can later reach. That is the question none of the three layers answer, and it is why the retention ask is not an optional extra.</p>
+        <p>It should be one primitive, not one per vendor. I do not want Claude Code to ship a sandbox, Codex to ship a different one with different gaps, and whatever I install next year to ship none. I want the operating system to offer an agent identity the way it already offers a user account: a scope I declare once, in one place, in one syntax, that every harness plugs into and none of them reimplements. That has to be a joint effort. Apple and the Linux side have to expose the primitive and make declaring a scope something a normal person can do. The harness vendors have to adopt it rather than rebuild it badly. Neither half is worth much alone, and right now neither exists.</p>
+
+        <p>And the honest limit, which is why no layer here is sufficient on its own: containment is not confidentiality. Sandbox an agent to a single repo and that repo still goes over the wire to an inference endpoint. No boundary on my machine can block the one destination that defines the product. All three layers answer the same question, which is what gets read. None of them touches what happens to it afterwards: what is kept, what is trained on, what a third party can later reach. That is why the retention ask is not an optional extra.</p>
 
         <h2>The question I do not have an answer to</h2>
 
