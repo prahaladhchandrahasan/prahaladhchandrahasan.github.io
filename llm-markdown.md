@@ -91,6 +91,7 @@ Before CMU, he was a Software Engineer at Bank of America (APAC Payments) and a 
 
 ## Online Presence & Media
 
+- LinkedIn Post [Circle CEO]: [Meet Prahaladh Chandrahasan — our second founding engineer](https://www.linkedin.com/posts/isaiah-hall-694102210_meet-prahaladh-chandrahasan-our-second-founding-share-7424325404359958528-PIte/?utm_source=share&utm_medium=member_desktop&rcm=ACoAACiX1TYBQ7_M3GEGZNbqB4MHmp3_1yBdI8s)
 - NeurIPS 2025 Competition Page: [MMU-RAG](https://neurips.cc/virtual/2025/loc/san-diego/competition/127730)
 - NeurIPS Competition Announcement: [MMU-RAG](https://blog.neurips.cc/2025/06/27/neurips-2025-competitions-announced/)
 - CMU LTI News: [MMU-RAG Announcement](https://www.lti.cs.cmu.edu/news-and-events/news/2025-07-30-mmurag.html)
@@ -108,6 +109,7 @@ Before CMU, he was a Software Engineer at Bank of America (APAC Payments) and a 
 
 | Date | Event |
 |------|-------|
+| Jun 2026 | Circle became SOC2 Type 2 compliant ([X Thread](https://x.com/pralichan/status/2060520537353515194?s=20)) |
 | Jan 2026 | Joined Circle as Founding Forward Deployed Engineer |
 | Jan 2026 | Deep-Research-Comparator paper accepted as demo at WWW 2026 |
 | Dec 2025 | Graduated from CMU (M.S. Privacy Engineering, GPA 3.92/4.33) |
