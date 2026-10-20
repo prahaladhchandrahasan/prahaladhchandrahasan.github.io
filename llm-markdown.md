@@ -1,7 +1,7 @@
 # Prahaladh Chandrahasan
 
 > Source: https://prahaladhchandrahasan.github.io
-> Last updated: 2026-07-30
+> Last updated: 2026-10-19
 
 ## Summary
 
@@ -16,7 +16,7 @@
 - **LinkedIn:** https://www.linkedin.com/in/prahaladh-chandrahasan/
 - **Google Scholar:** https://scholar.google.com/citations?user=2tXIWX4AAAAJ&hl=en&authuser=1
 - **X/Twitter:** https://x.com/pralichan
-- **Open Thoughts:** https://prahaladhchandrahasan.github.io/thoughts/your-personal-computer-is-not-that-personal/ , https://prahaladhchandrahasan.github.io/thoughts/in-defense-of-the-gpt-wrapper/ and https://prahaladhchandrahasan.github.io/thoughts/some-stuff-about-cmu/
+- **Open Thoughts:** https://prahaladhchandrahasan.github.io/thoughts/ai-rant-october-2026/ , https://prahaladhchandrahasan.github.io/thoughts/your-personal-computer-is-not-that-personal/ , https://prahaladhchandrahasan.github.io/thoughts/in-defense-of-the-gpt-wrapper/ and https://prahaladhchandrahasan.github.io/thoughts/some-stuff-about-cmu/
 
 ---
 
@@ -98,6 +98,8 @@ Before CMU, he was a Software Engineer at Bank of America (APAC Payments) and a 
 - UsersFirst PEPR Talk: [USENIX PEPR 2025](https://www.usenix.org/conference/pepr25/presentation/sadeh)
 
 ## Open Thoughts
+
+- [AI Rant: October 2026](https://prahaladhchandrahasan.github.io/thoughts/ai-rant-october-2026/) — reflections from building Decla on AI progress, moats across energy, chips, models, and applications, and software built for agents.
 
 - [Your personal computer is not that personal](https://prahaladhchandrahasan.github.io/thoughts/your-personal-computer-is-not-that-personal/) — what a coding agent could read off a personal laptop with Full Disk Access, and why agent and OS guardrails are built for integrity (damage/write/exfiltration) when the real exposure is confidentiality (what can be read); covers Claude Code permission vs sandbox layers, macOS TCC, and where the responsibility sits.
 - [In defense of the "GPT wrapper"](https://prahaladhchandrahasan.github.io/thoughts/in-defense-of-the-gpt-wrapper/) — practical engineering challenges behind building AI agents and "GPT wrappers", including context management, harness safety, concurrency, reversibility, scoping, tool ergonomics, file formats, UI, and timestamps.
