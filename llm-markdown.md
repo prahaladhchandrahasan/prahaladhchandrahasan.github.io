@@ -61,13 +61,21 @@ Before CMU, he was a Software Engineer at Bank of America (APAC Payments) and a 
 - **Venue:** arXiv preprint arXiv:2507.05495 (Jul 2025); accepted as demo at The Web Conference (WWW) 2026
 - **Links:** [Paper](https://arxiv.org/abs/2507.05495) | [GitHub](https://github.com/cxcscmu/Deep-Research-Comparator) | [Demo](https://www.youtube.com/watch?v=g4d2dnbdseg)
 
-### [2] Federated Learning for Colorectal Cancer Prediction
+### [2] Distributed, Privacy Preserving, Payments Fraud Detection System
+- **Inventors:** Prahaladh Chandrahasan, Sujatha Balaji
+- **Publication:** Published U.S. patent application US20250078079A1
+- **Assignee:** Bank of America
+- **Dates:** Filed August 2023; published March 2025
+- **Summary:** Co-developed a federated learning approach to payment fraud detection, allowing distributed payment systems to learn from shared model updates while keeping transaction data local. Bank of America filed a patent application for the work.
+- **Links:** [View application](https://patents.google.com/patent/US20250078079A1/en)
+
+### [3] Federated Learning for Colorectal Cancer Prediction
 - **Authors:** Yash Maurya, Prahaladh Chandrahasan, Poornalatha G
 - **Venue:** 2022 IEEE 3rd Global Conference for Advancement in Technology (GCAT)
 - **DOI:** https://doi.org/10.1109/gcat55367.2022.9972224
 - **Links:** [Paper](https://ieeexplore.ieee.org/document/9972224)
 
-### [3] Motion pattern-based crowd scene classification using histogram of angular deviations of trajectories
+### [4] Motion pattern-based crowd scene classification using histogram of angular deviations of trajectories
 - **Authors:** A. K. Pai, Prahaladh Chandrahasan, U. Raghavendra, A. K. Karunakar
 - **Venue:** The Visual Computer, vol. 39, no. 2, pp. 557–567 (Jan 2022)
 - **DOI:** https://doi.org/10.1007/s00371-021-02356-3
@@ -122,7 +130,7 @@ Before CMU, he was a Software Engineer at Bank of America (APAC Payments) and a 
 | Jan 2025 | Started privacy threat modelling independent study under Prof. Sadeh |
 | Sept 2024 | Began M.S. in Privacy Engineering at CMU |
 | Sept 2023 | Received Arpit Jain Best Researcher Scholarship |
-| Aug 2023 | Filed first patent through Bank of America |
+| Aug 2023 | Bank of America filed a patent application for our work on privacy-preserving payment fraud detection ([Application](https://patents.google.com/patent/US20250078079A1/en)) |
 | Sept 2022 | Joined Bank of America as Software Engineer |
 | Jul 2022 | Published: Federated Learning for Colorectal Cancer Prediction (IEEE GCAT) |
 | Jan 2022 | Published: Motion pattern-based crowd scene classification (The Visual Computer) |
