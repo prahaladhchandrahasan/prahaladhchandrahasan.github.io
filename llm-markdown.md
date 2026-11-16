@@ -111,6 +111,7 @@ Before CMU, he was a Software Engineer at Bank of America (APAC Payments) and a 
 
 | Date | Event |
 |------|-------|
+| Sept 2026 | Decla became HIPAA compliant |
 | Jun 2026 | Decla became SOC2 Type 2 compliant ([X Thread](https://x.com/pralichan/status/2060520537353515194?s=20)) |
 | Jan 2026 | Joined Decla as Founding Forward Deployed Engineer |
 | Jan 2026 | Deep-Research-Comparator paper accepted as demo at WWW 2026 |
